@@ -2,10 +2,13 @@ package cn.wisdom.dao;
 
 import java.util.List;
 
+import org.springframework.stereotype.Repository;
+
 import cn.wisdom.dao.constant.UserState;
 import cn.wisdom.dao.mapper.DaoRowMapper;
 import cn.wisdom.dao.vo.User;
 
+@Repository
 public class UserDaoImpl implements UserDao {
 
 	private DaoHelper daoHelper;
