@@ -17,9 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
 
 import cn.wisdom.api.response.CreditAPIResult;
 import cn.wisdom.common.model.JsonDocument;
@@ -77,17 +75,12 @@ public class UsersController
      */
     @RequestMapping(method = RequestMethod.POST, value = "/stuff/step1")
     @ResponseBody
-    public JsonDocument submitStuffStep1(@RequestPart("idFaceImg") MultipartFile idFaceImg, 
-    		@RequestPart("idBackImg") MultipartFile idBackImg, 
-    		@RequestPart("personIdImg") MultipartFile personIdImg, @RequestBody User userStuff1) throws ServiceException
+    public JsonDocument submitStuffStep1(@RequestBody User userStuff1) throws ServiceException
     {
     	User user = SessionContext.getCurrentUser();
     	
     	// set submit info into user.
     	user.setRealName(userStuff1.getRealName());
-    	user.setIdFaceImg(idFaceImg);
-    	user.setIdBackImg(idBackImg);
-    	user.setPersonIdImg(personIdImg);
     	user.setProvince(userStuff1.getProvince());
     	user.setCity(userStuff1.getCity());
     	user.setDistinct(userStuff1.getDistinct());
@@ -133,13 +126,13 @@ public class UsersController
      */
     @RequestMapping(method = RequestMethod.POST, value = "/stuff/step3")
     @ResponseBody
-    public JsonDocument submitStuffStep3(@RequestBody User userStuff2) throws ServiceException
+    public JsonDocument submitStuffStep3(@RequestBody User userStuff3) throws ServiceException
     {
     	User user = SessionContext.getCurrentUser();
     	
     	// set submit info into user.
-    	user.setPhone(userStuff2.getPhone());
-    	user.setPhonePassword(userStuff2.getPhone());
+    	user.setPhone(userStuff3.getPhone());
+    	user.setPhonePassword(userStuff3.getPhone());
     	
     	userService.submitStuffStep3(user);
     	
@@ -154,7 +147,7 @@ public class UsersController
      */
     @RequestMapping(method = RequestMethod.POST, value = "/stuff/step4")
     @ResponseBody
-    public JsonDocument submitStuffStep4(@RequestPart("wxPayImg") MultipartFile wxPayImg) throws ServiceException
+    public JsonDocument submitStuffStep4(@RequestBody User userStuff4) throws ServiceException
     {
     	User user = SessionContext.getCurrentUser();
     	

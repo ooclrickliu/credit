@@ -1,14 +1,20 @@
 package cn.wisdom.service;
 
+import java.io.File;
+
+import me.chanjar.weixin.common.exception.WxErrorException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import cn.wisdom.common.log.Logger;
+import cn.wisdom.common.log.LoggerFactory;
 import cn.wisdom.common.utils.DateTimeUtils;
 import cn.wisdom.common.utils.StringUtils;
 import cn.wisdom.dao.CreditApplyDao;
 import cn.wisdom.dao.constant.ApplyState;
 import cn.wisdom.dao.vo.CreditApply;
-import cn.wisdom.service.context.SessionContext;
+import cn.wisdom.service.wx.WXService;
 
 @Service
 public class CreditServiceImpl implements CreditService {
@@ -20,7 +26,9 @@ public class CreditServiceImpl implements CreditService {
 	private CreditApplyDao creditApplyDao;
 	
 	@Autowired
-	private FileUploadService fileUploadService;
+	private WXService wxService;
+	
+    private static final Logger logger = LoggerFactory.getLogger(CreditServiceImpl.class.getName());
 	
 	@Override
 	public CreditApply applyCreditStep1(CreditApply creditApply) {
@@ -51,10 +59,12 @@ public class CreditServiceImpl implements CreditService {
 	@Override
 	public void applyCreditStep2(CreditApply creditApply) {
 
-		String fileName = "" + SessionContext.getCurrentUser().getId() + System.currentTimeMillis();
-		String commissionImgUrl = fileUploadService.saveUploadFile(creditApply.getCommissionImg(), fileName);
-		
-		creditApply.setCommissionImgUrl(commissionImgUrl);
+		try {
+			File commissionImg = wxService.getWxMpService().mediaDownload(creditApply.getCommissionImgUrl());
+			creditApply.setCommissionImgUrl(commissionImg.getAbsolutePath());
+		} catch (WxErrorException e) {
+			logger.error("failed to upload commissionImg", e);
+		}
 		
 		if (isCreditApplyReady(creditApply)) {
 			creditApply.setApplyState(ApplyState.Approving);

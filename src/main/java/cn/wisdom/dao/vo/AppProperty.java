@@ -23,9 +23,6 @@ public class AppProperty
 {
 	@Value("${cookie.access_token.age}")
 	public int cookieAccessTokenAge;
-	
-	@Value("${file.upload.dir}")
-	public String fileUploadDir;
 
 	@Value("${credit.rate.day}")
 	public float creditRatePerDay;

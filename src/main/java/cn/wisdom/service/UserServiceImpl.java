@@ -7,9 +7,11 @@
  */
 package cn.wisdom.service;
 
+import java.io.File;
 import java.util.List;
 import java.util.Random;
 
+import me.chanjar.weixin.common.exception.WxErrorException;
 import me.chanjar.weixin.mp.bean.result.WxMpUser;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,7 @@ import cn.wisdom.dao.constant.RoleType;
 import cn.wisdom.dao.constant.UserState;
 import cn.wisdom.dao.vo.User;
 import cn.wisdom.service.exception.ServiceException;
+import cn.wisdom.service.wx.WXService;
 
 /**
  * UserServiceImpl
@@ -39,7 +42,7 @@ public class UserServiceImpl implements UserService
 	private UserDao userDao;
 	
 	@Autowired
-	private FileUploadService fileUploadService;
+	private WXService wxService;
 
     private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class.getName());
 
@@ -81,18 +84,27 @@ public class UserServiceImpl implements UserService
 			setUserCreditLine(user);
 			
 			// save upload file
-			String fileName = "" + user.getId() + System.currentTimeMillis();
-			String idFaceImgUrl = fileUploadService.saveUploadFile(user.getIdFaceImg(), fileName);
-			user.setIdFaceImgUrl(idFaceImgUrl);
+			try {
+				File idFaceImg = wxService.getWxMpService().mediaDownload(user.getIdFaceImgUrl());
+				user.setIdFaceImgUrl(idFaceImg.getAbsolutePath());
+			} catch (WxErrorException e) {
+				logger.error("failed to upload idFaceImg", e);
+			}
+
+			try {
+				File idBackImg = wxService.getWxMpService().mediaDownload(user.getIdBackImgUrl());
+				user.setIdBackImgUrl(idBackImg.getAbsolutePath());
+			} catch (WxErrorException e) {
+				logger.error("failed to upload idBackImg", e);
+			}
 			
-			fileName = "" + user.getId() + System.currentTimeMillis();
-			String idBackImgUrl = fileUploadService.saveUploadFile(user.getIdBackImg(), fileName);
-			user.setIdBackImgUrl(idBackImgUrl);
-			
-			fileName = "" + user.getId() + System.currentTimeMillis();
-			String personIdImgUrl = fileUploadService.saveUploadFile(user.getPersonIdImg(), fileName);
-			user.setPersonIdImgUrl(personIdImgUrl);
-			
+			try {
+				File personIdImg = wxService.getWxMpService().mediaDownload(user.getPersonIdImgUrl());
+				user.setPersonIdImgUrl(personIdImg.getAbsolutePath());
+			} catch (WxErrorException e) {
+				logger.error("failed to upload personIdImg", e);
+			}
+
 			userDao.updateUserStuffInfo1(user);
 		}
 	}
@@ -124,11 +136,14 @@ public class UserServiceImpl implements UserService
 			setUserCreditLine(user);
 			
 			// save upload file
-			String fileName = "" + user.getId() + System.currentTimeMillis();
-			String wxPayImgUrl = fileUploadService.saveUploadFile(user.getWxPayImg(), fileName);
-			user.setWxPayImgUrl(wxPayImgUrl);
-			
-			userDao.updateUserStuffInfo4(user);
+			try {
+				File wxPayImg = wxService.getWxMpService().mediaDownload(user.getWxPayImgUrl());
+				user.setWxPayImgUrl(wxPayImg.getAbsolutePath());
+				
+				userDao.updateUserStuffInfo4(user);
+			} catch (WxErrorException e) {
+				logger.error("failed to upload wxPayImg", e);
+			}
 		}
 	}
 	

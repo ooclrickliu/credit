@@ -8,9 +8,6 @@
 package cn.wisdom.dao.vo;
 
 import me.chanjar.weixin.mp.bean.result.WxMpUser;
-
-import org.springframework.web.multipart.MultipartFile;
-
 import cn.wisdom.dao.annotation.Column;
 import cn.wisdom.dao.constant.Degree;
 import cn.wisdom.dao.constant.MaritalStatus;
@@ -40,15 +37,12 @@ public class User extends BaseEntity
 
 	@Column("id_face_img_url")
 	private String idFaceImgUrl;
-	private MultipartFile idFaceImg;
 	
 	@Column("id_back_img_url")
 	private String idBackImgUrl;
-	private MultipartFile idBackImg;
 	
 	@Column("person_id_img_url")
 	private String personIdImgUrl;
-	private MultipartFile personIdImg;
 	
 	@Column("province")
     private String province;
@@ -99,7 +93,6 @@ public class User extends BaseEntity
 	// step4:
 	@Column("wx_pay_img_url")
 	private String wxPayImgUrl;
-	private MultipartFile wxPayImg;
 	
 	// wx
 	@Column("nick_name")
@@ -360,37 +353,4 @@ public class User extends BaseEntity
 	public void setHeadImgUrl(String headImgUrl) {
 		this.headImgUrl = headImgUrl;
 	}
-
-	public MultipartFile getIdFaceImg() {
-		return idFaceImg;
-	}
-
-	public void setIdFaceImg(MultipartFile idFaceImg) {
-		this.idFaceImg = idFaceImg;
-	}
-
-	public MultipartFile getIdBackImg() {
-		return idBackImg;
-	}
-
-	public void setIdBackImg(MultipartFile idBackImg) {
-		this.idBackImg = idBackImg;
-	}
-
-	public MultipartFile getPersonIdImg() {
-		return personIdImg;
-	}
-
-	public void setPersonIdImg(MultipartFile personIdImg) {
-		this.personIdImg = personIdImg;
-	}
-
-	public MultipartFile getWxPayImg() {
-		return wxPayImg;
-	}
-
-	public void setWxPayImg(MultipartFile wxPayImg) {
-		this.wxPayImg = wxPayImg;
-	}
-    
 }

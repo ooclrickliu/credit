@@ -2,9 +2,10 @@
     <appId>wx17027d095ba928c0</appId>
     <secret>7c47cd7875f648c1d03e5eb63222dbef</secret>
     <token>credit</token>
-    <aesKey>k4xLGOOMAN67Qaru2AI6ETxPbvSP1gV8yj0F7U7ZRAK</aesKey>
+    <aesKey>on7mwHko4U806ZSXhVNmcpV1w72QTMvJkwEpibjXADV</aesKey>
     <accessToken>BRdO_IpPCpH_nATHTnPF7afgZOeZXJzdok6TeD05IKleufgIFKvm3ZOK9sGpcPF7a_APqqISIeKdXlr2ylHGgzCkHgsmWC8MXPOvHogeD7p1Y9u_9Dcx3LtKlIkY8EU1AKRaAEADNU</accessToken>
     <expiresTime>1468483546201</expiresTime>
     <openId>olz_hvioOM7d9KbXzZ1F0bOvXW7A</openId>
-    <oauth2redirectUri>http://www.southwisdom.cn</oauth2redirectUri>
+    <oauth2redirectUri>http://credit.southwisdom.cn</oauth2redirectUri>
+    <uploadDir>/home/credit/upload</uploadDir>
 </xml>
