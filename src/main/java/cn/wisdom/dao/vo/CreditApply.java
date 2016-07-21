@@ -146,4 +146,12 @@ public class CreditApply extends BaseEntity {
 		this.commissionImg = commissionImg;
 	}
 
+	public float getInterest() {
+		return interest;
+	}
+
+	public void setInterest(float interest) {
+		this.interest = interest;
+	}
+
 }

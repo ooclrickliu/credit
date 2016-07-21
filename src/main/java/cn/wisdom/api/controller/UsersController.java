@@ -133,12 +133,13 @@ public class UsersController
      */
     @RequestMapping(method = RequestMethod.POST, value = "/stuff/step3")
     @ResponseBody
-    public JsonDocument submitStuffStep3(@RequestPart("wxPayImg") MultipartFile wxPayImg) throws ServiceException
+    public JsonDocument submitStuffStep3(@RequestBody User userStuff2) throws ServiceException
     {
     	User user = SessionContext.getCurrentUser();
     	
     	// set submit info into user.
-    	user.setWxPayImg(wxPayImg);
+    	user.setPhone(userStuff2.getPhone());
+    	user.setPhonePassword(userStuff2.getPhone());
     	
     	userService.submitStuffStep3(user);
     	
@@ -153,7 +154,7 @@ public class UsersController
      */
     @RequestMapping(method = RequestMethod.POST, value = "/stuff/step4")
     @ResponseBody
-    public JsonDocument submitStuffStep4(@RequestParam String code) throws ServiceException
+    public JsonDocument submitStuffStep4(@RequestPart("wxPayImg") MultipartFile wxPayImg) throws ServiceException
     {
     	User user = SessionContext.getCurrentUser();
     	

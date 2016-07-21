@@ -26,4 +26,7 @@ public class AppProperty
 	
 	@Value("${file.upload.dir}")
 	public String fileUploadDir;
+
+	@Value("${credit.rate.day}")
+	public float creditRatePerDay;
 }

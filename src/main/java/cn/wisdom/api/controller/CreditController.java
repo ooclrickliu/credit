@@ -13,8 +13,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
+import cn.wisdom.api.request.CreditRequest;
 import cn.wisdom.api.response.CreditAPIResult;
 import cn.wisdom.common.model.JsonDocument;
 import cn.wisdom.dao.vo.CreditApply;
@@ -50,26 +53,46 @@ public class CreditController
     @ResponseBody
     public JsonDocument getAccountProfile() throws ServiceException
     {
-    	creditService.getAccountProfile(SessionContext.getCurrentUser());
+//    	creditService.getAccountProfile(SessionContext.getCurrentUser());
     	
         return SUCCESS;
     }
     
     /**
-     * 申请借款
+     * 申请借款：提交借款申请
      * 
      * @return
      * @throws ServiceException
      */
-    @RequestMapping(method = RequestMethod.POST, value = "/apply")
+    @RequestMapping(method = RequestMethod.POST, value = "/apply/step1")
     @ResponseBody
-    public JsonDocument applyCredit(@RequestBody String code) throws ServiceException
+    public JsonDocument applyCreditStep1(@RequestBody CreditRequest creditRequest) throws ServiceException
     {
     	CreditApply creditApply = new CreditApply();
-    	creditApply.setAmount(amount);
-    	creditApply.setMonth(month);
+    	creditApply.setUserId(SessionContext.getCurrentUser().getId());
+    	creditApply.setAmount(creditRequest.getAmount());
+    	creditApply.setMonth(creditRequest.getMonth());
     	
-    	creditApply = creditService.applyCreditStep1();
+    	creditApply = creditService.applyCreditStep1(creditApply);
+    	
+    	return SUCCESS;
+    }
+    
+    /**
+     * 申请借款: 提交手续费支付凭证
+     * 
+     * @return
+     * @throws ServiceException
+     */
+    @RequestMapping(method = RequestMethod.POST, value = "/apply/step2")
+    @ResponseBody
+    public JsonDocument applyCreditStep2(@RequestParam long id, @RequestPart("commissionImg") MultipartFile commissionImg) throws ServiceException
+    {
+    	CreditApply creditApply = new CreditApply();
+    	creditApply.setId(id);
+    	creditApply.setCommissionImg(commissionImg);
+    	
+    	creditService.applyCreditStep2(creditApply);
     	
     	return SUCCESS;
     }

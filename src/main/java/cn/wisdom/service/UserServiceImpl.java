@@ -7,17 +7,13 @@
  */
 package cn.wisdom.service;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
 import java.util.Random;
 
 import me.chanjar.weixin.mp.bean.result.WxMpUser;
 
-import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import cn.wisdom.common.log.Logger;
 import cn.wisdom.common.log.LoggerFactory;
@@ -25,7 +21,6 @@ import cn.wisdom.common.utils.StringUtils;
 import cn.wisdom.dao.UserDao;
 import cn.wisdom.dao.constant.RoleType;
 import cn.wisdom.dao.constant.UserState;
-import cn.wisdom.dao.vo.AppProperty;
 import cn.wisdom.dao.vo.User;
 import cn.wisdom.service.exception.ServiceException;
 
@@ -44,7 +39,7 @@ public class UserServiceImpl implements UserService
 	private UserDao userDao;
 	
 	@Autowired
-	private AppProperty appProperty;
+	private FileUploadService fileUploadService;
 
     private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class.getName());
 
@@ -86,11 +81,16 @@ public class UserServiceImpl implements UserService
 			setUserCreditLine(user);
 			
 			// save upload file
-			String idFaceImgUrl = saveUploadFile(user.getIdFaceImg(), "" + user.getId());
+			String fileName = "" + user.getId() + System.currentTimeMillis();
+			String idFaceImgUrl = fileUploadService.saveUploadFile(user.getIdFaceImg(), fileName);
 			user.setIdFaceImgUrl(idFaceImgUrl);
-			String idBackImgUrl = saveUploadFile(user.getIdBackImg(), "" + user.getId());
+			
+			fileName = "" + user.getId() + System.currentTimeMillis();
+			String idBackImgUrl = fileUploadService.saveUploadFile(user.getIdBackImg(), fileName);
 			user.setIdBackImgUrl(idBackImgUrl);
-			String personIdImgUrl = saveUploadFile(user.getPersonIdImg(), "" + user.getId());
+			
+			fileName = "" + user.getId() + System.currentTimeMillis();
+			String personIdImgUrl = fileUploadService.saveUploadFile(user.getPersonIdImg(), fileName);
 			user.setPersonIdImgUrl(personIdImgUrl);
 			
 			userDao.updateUserStuffInfo1(user);
@@ -124,7 +124,8 @@ public class UserServiceImpl implements UserService
 			setUserCreditLine(user);
 			
 			// save upload file
-			String wxPayImgUrl = saveUploadFile(user.getWxPayImg(), "" + user.getId());
+			String fileName = "" + user.getId() + System.currentTimeMillis();
+			String wxPayImgUrl = fileUploadService.saveUploadFile(user.getWxPayImg(), fileName);
 			user.setWxPayImgUrl(wxPayImgUrl);
 			
 			userDao.updateUserStuffInfo4(user);
@@ -138,21 +139,6 @@ public class UserServiceImpl implements UserService
 			
 			user.setUserState(UserState.New);
 		}
-	}
-
-	private String saveUploadFile(MultipartFile multipartFile, String id) {
-		String dir = appProperty.fileUploadDir;
-		
-		String fileName = id + System.currentTimeMillis();
-		File file = new File(dir + fileName);
-		
-		try {
-			FileUtils.writeByteArrayToFile(file, multipartFile.getBytes());
-		} catch (IOException e) {
-			logger.error("Failed to save upload file - " + multipartFile.getName(), e);
-		}
-		
-		return fileName;
 	}
 	
 	private boolean isStuffComplete(User user) {
