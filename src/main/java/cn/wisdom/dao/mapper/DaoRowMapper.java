@@ -38,13 +38,13 @@ public class DaoRowMapper<T> implements RowMapper<T>
     private Logger logger = LoggerFactory.getLogger(DaoRowMapper.class
             .getName());
     
-    public DaoRowMapper()
-    {
-    	rowObjClass = (Class<T>) ((ParameterizedType) getClass()
-                .getGenericSuperclass()).getActualTypeArguments()[0];
-
-        this.direct = this.isDirectClass();
-    }
+//    public DaoRowMapper()
+//    {
+//    	rowObjClass = (Class<T>) ((ParameterizedType) getClass()
+//                .getGenericSuperclass()).getActualTypeArguments()[0];
+//
+//        this.direct = this.isDirectClass();
+//    }
 
     public DaoRowMapper(Class<? extends T> rowObjClass)
     {

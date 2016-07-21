@@ -24,9 +24,6 @@ public class AppProperty
 	@Value("${cookie.access_token.age}")
 	public int cookieAccessTokenAge;
 	
-	@Value("${payment.service_url}")
-	public String paymentServiceUrl;
-	
-	@Value("${payment.debug}")
-	public boolean debugPay;
+	@Value("${file.upload.dir}")
+	public String fileUploadDir;
 }

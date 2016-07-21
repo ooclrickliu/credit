@@ -8,8 +8,14 @@
 package cn.wisdom.dao.vo;
 
 import me.chanjar.weixin.mp.bean.result.WxMpUser;
+
+import org.springframework.web.multipart.MultipartFile;
+
 import cn.wisdom.dao.annotation.Column;
+import cn.wisdom.dao.constant.Degree;
+import cn.wisdom.dao.constant.MaritalStatus;
 import cn.wisdom.dao.constant.RoleType;
+import cn.wisdom.dao.constant.UserState;
 
 /**
  * User2
@@ -28,20 +34,21 @@ public class User extends BaseEntity
     private String roleValue;
 	private RoleType role;
 	
+	// step1
 	@Column("real_name")
-	private String real_name;
+	private String realName;
 
-	@Column("phone")
-    private String phone;
+	@Column("id_face_img_url")
+	private String idFaceImgUrl;
+	private MultipartFile idFaceImg;
 	
-	@Column("card_no")
-	private String cardNo;
+	@Column("id_back_img_url")
+	private String idBackImgUrl;
+	private MultipartFile idBackImg;
 	
-	@Column("nick_name")
-    private String nickName;
-
-	@Column("sex")
-    private String sex;
+	@Column("person_id_img_url")
+	private String personIdImgUrl;
+	private MultipartFile personIdImg;
 	
 	@Column("province")
     private String province;
@@ -50,45 +57,75 @@ public class User extends BaseEntity
     private String city;
 
 	@Column("country")
-    private String country;
+    private String distinct;
+	
+	@Column("marital_status")
+	private String maritalStatusValue;
+	private MaritalStatus maritalStatus;
+	
+	@Column("degree")
+	private String degreeValue;
+	private Degree degree;
+
+	// step2
+	@Column("relative_name1")
+    private String relativeName1;
+	
+	@Column("relative_relation1")
+	private String relativeRelation1;
+	
+	@Column("relative_phone1")
+	private String relativePhone1;
+	
+	@Column("relative_name2")
+	private String relativeName2;
+	
+	@Column("relative_relation2")
+	private String relativeRelation2;
+	
+	@Column("relative_phone2")
+	private String relativePhone2;
+	
+	// step3:
+	@Column("phone")
+	private String phone;
+	
+	@Column("phone_password")
+	private String phonePassword;
+	
+	@Column("account_no")
+	private String accountNo;
+	
+	// step4:
+	@Column("wx_pay_img_url")
+	private String wxPayImgUrl;
+	private MultipartFile wxPayImg;
+	
+	// wx
+	@Column("nick_name")
+    private String nickName;
 
 	@Column("head_img_url")
     private String headImgUrl;
 	
-	@Column("unionid")
-    private String unionid;
-
-	@Column("subscribe_time")
-    private long subscribeTime;
+	// other:
+	@Column("approve_time")
+    private String approveTime;
+	
+	@Column("approve_note")
+	private String approveNote;
+	
+	@Column("credit_line")
+	private float creditLine;
+	
+	@Column("user_state")
+	private String userStateValue;
+	private UserState userState;
 	
 	public User() {}
 	
 	public User(WxMpUser wxMpUser) {
 		this.openid = wxMpUser.getOpenId();
-		this.nickName = wxMpUser.getNickname();
-		this.province = wxMpUser.getProvince();
-		this.city = wxMpUser.getCity();
-		this.country = wxMpUser.getCountry();
-		this.sex = wxMpUser.getSex();
-		this.headImgUrl = wxMpUser.getHeadImgUrl();
-		this.unionid = wxMpUser.getUnionId();
-		this.subscribeTime = wxMpUser.getSubscribeTime();
-	}
-
-	public String getNickName() {
-		return nickName;
-	}
-
-	public void setNickName(String nickName) {
-		this.nickName = nickName;
-	}
-
-	public String getSex() {
-		return sex;
-	}
-
-	public void setSex(String sex) {
-		this.sex = sex;
 	}
 
 	public String getProvince() {
@@ -107,36 +144,12 @@ public class User extends BaseEntity
 		this.city = city;
 	}
 
-	public String getCountry() {
-		return country;
+	public String getDistinct() {
+		return distinct;
 	}
 
-	public void setCountry(String country) {
-		this.country = country;
-	}
-
-	public String getHeadImgUrl() {
-		return headImgUrl;
-	}
-
-	public void setHeadImgUrl(String headImgUrl) {
-		this.headImgUrl = headImgUrl;
-	}
-
-	public String getUnionid() {
-		return unionid;
-	}
-
-	public void setUnionid(String unionid) {
-		this.unionid = unionid;
-	}
-
-	public long getSubscribeTime() {
-		return subscribeTime;
-	}
-
-	public void setSubscribeTime(long subscribeTime) {
-		this.subscribeTime = subscribeTime;
+	public void setDistinct(String distinct) {
+		this.distinct = distinct;
 	}
 
 	public String getOpenid() {
@@ -155,14 +168,6 @@ public class User extends BaseEntity
 		this.phone = phone;
 	}
 
-	public String getCardNo() {
-		return cardNo;
-	}
-
-	public void setCardNo(String cardNo) {
-		this.cardNo = cardNo;
-	}
-
 	public RoleType getRole() {
 		return RoleType.valueOf(this.roleValue);
 	}
@@ -172,12 +177,220 @@ public class User extends BaseEntity
 		this.roleValue = this.role.toString();
 	}
 
-	public String getReal_name() {
-		return real_name;
+	public String getRoleValue() {
+		return roleValue;
 	}
 
-	public void setReal_name(String real_name) {
-		this.real_name = real_name;
+	public void setRoleValue(String roleValue) {
+		this.roleValue = roleValue;
+	}
+
+	public String getRealName() {
+		return realName;
+	}
+
+	public void setRealName(String realName) {
+		this.realName = realName;
+	}
+
+	public String getIdFaceImgUrl() {
+		return idFaceImgUrl;
+	}
+
+	public void setIdFaceImgUrl(String idFaceImgUrl) {
+		this.idFaceImgUrl = idFaceImgUrl;
+	}
+
+	public String getIdBackImgUrl() {
+		return idBackImgUrl;
+	}
+
+	public void setIdBackImgUrl(String idBackImgUrl) {
+		this.idBackImgUrl = idBackImgUrl;
+	}
+
+	public String getPersonIdImgUrl() {
+		return personIdImgUrl;
+	}
+
+	public void setPersonIdImgUrl(String personIdImgUrl) {
+		this.personIdImgUrl = personIdImgUrl;
+	}
+
+	public MaritalStatus getMaritalStatus() {
+		return maritalStatus;
+	}
+
+	public void setMaritalStatus(MaritalStatus maritalStatus) {
+		this.maritalStatus = maritalStatus;
+	}
+
+	public void setDegreeValue(String degreeValue) {
+		this.degreeValue = degreeValue;
+	}
+
+	public Degree getDegree() {
+		return degree;
+	}
+
+	public void setDegree(Degree degree) {
+		this.degree = degree;
+	}
+
+	public String getRelativeName1() {
+		return relativeName1;
+	}
+
+	public void setRelativeName1(String relativeName1) {
+		this.relativeName1 = relativeName1;
+	}
+
+	public String getRelativeRelation1() {
+		return relativeRelation1;
+	}
+
+	public void setRelativeRelation1(String relativeRelation1) {
+		this.relativeRelation1 = relativeRelation1;
+	}
+
+	public String getRelativePhone1() {
+		return relativePhone1;
+	}
+
+	public void setRelativePhone1(String relativePhone1) {
+		this.relativePhone1 = relativePhone1;
+	}
+
+	public String getRelativeName2() {
+		return relativeName2;
+	}
+
+	public void setRelativeName2(String relativeName2) {
+		this.relativeName2 = relativeName2;
+	}
+
+	public String getRelativeRelation2() {
+		return relativeRelation2;
+	}
+
+	public void setRelativeRelation2(String relativeRelation2) {
+		this.relativeRelation2 = relativeRelation2;
+	}
+
+	public String getRelativePhone2() {
+		return relativePhone2;
+	}
+
+	public void setRelativePhone2(String relativePhone2) {
+		this.relativePhone2 = relativePhone2;
+	}
+
+	public String getPhonePassword() {
+		return phonePassword;
+	}
+
+	public void setPhonePassword(String phonePassword) {
+		this.phonePassword = phonePassword;
+	}
+
+	public String getAccountNo() {
+		return accountNo;
+	}
+
+	public void setAccountNo(String accountNo) {
+		this.accountNo = accountNo;
+	}
+
+	public String getWxPayImgUrl() {
+		return wxPayImgUrl;
+	}
+
+	public void setWxPayImgUrl(String wxPayImgUrl) {
+		this.wxPayImgUrl = wxPayImgUrl;
+	}
+
+	public String getApproveTime() {
+		return approveTime;
+	}
+
+	public void setApproveTime(String approveTime) {
+		this.approveTime = approveTime;
+	}
+
+	public String getApproveNote() {
+		return approveNote;
+	}
+
+	public void setApproveNote(String approveNote) {
+		this.approveNote = approveNote;
+	}
+
+	public float getCreditLine() {
+		return creditLine;
+	}
+
+	public void setCreditLine(float creditLine) {
+		this.creditLine = creditLine;
+	}
+
+	public UserState getUserState() {
+		if (userState == null) {
+			userState = UserState.valueOf(userStateValue);
+		}
+		
+		return userState;
+	}
+
+	public void setUserState(UserState userState) {
+		this.userState = userState;
+	}
+
+	public String getNickName() {
+		return nickName;
+	}
+
+	public void setNickName(String nickName) {
+		this.nickName = nickName;
+	}
+
+	public String getHeadImgUrl() {
+		return headImgUrl;
+	}
+
+	public void setHeadImgUrl(String headImgUrl) {
+		this.headImgUrl = headImgUrl;
+	}
+
+	public MultipartFile getIdFaceImg() {
+		return idFaceImg;
+	}
+
+	public void setIdFaceImg(MultipartFile idFaceImg) {
+		this.idFaceImg = idFaceImg;
+	}
+
+	public MultipartFile getIdBackImg() {
+		return idBackImg;
+	}
+
+	public void setIdBackImg(MultipartFile idBackImg) {
+		this.idBackImg = idBackImg;
+	}
+
+	public MultipartFile getPersonIdImg() {
+		return personIdImg;
+	}
+
+	public void setPersonIdImg(MultipartFile personIdImg) {
+		this.personIdImg = personIdImg;
+	}
+
+	public MultipartFile getWxPayImg() {
+		return wxPayImg;
+	}
+
+	public void setWxPayImg(MultipartFile wxPayImg) {
+		this.wxPayImg = wxPayImg;
 	}
     
 }

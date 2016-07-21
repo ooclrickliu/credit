@@ -20,6 +20,7 @@ import cn.wisdom.common.log.Logger;
 import cn.wisdom.common.log.LoggerFactory;
 import cn.wisdom.common.utils.CollectionUtils;
 import cn.wisdom.common.utils.DateTimeUtils;
+import cn.wisdom.common.utils.StringUtils;
 import cn.wisdom.service.UserService;
 import cn.wisdom.service.exception.ServiceException;
 import cn.wisdom.service.wx.WXService;
@@ -32,9 +33,6 @@ public class WxMpEventHandler implements WxMpMessageHandler {
 	
 	@Autowired
 	private UserService userService;
-	
-	@Autowired
-	private LotteryServiceFacade lotteryServiceFacade;
 	
 //	private static final String EVENT_KEY_SCAN = "qrscene_";
 	
@@ -77,99 +75,11 @@ public class WxMpEventHandler implements WxMpMessageHandler {
 		
 		//开奖公告
 		if (StringUtils.equalsIgnoreCase(menuKey, "draw_notice")) {
-			response = getDrawNotice(wxMessage);
+//			response = getDrawNotice(wxMessage);
 		}
 		//我的彩票
 		else if (StringUtils.equalsIgnoreCase(menuKey, "my_lottery")) {
-			response = getMyLottery(wxMessage);
-		}
-		
-		return response;
-	}
-
-	private WxMpXmlOutMessage getMyLottery(WxMpXmlMessage wxMessage) {
-		WxMpXmlOutMessage response = null;
-		
-		try {
-			List<Lottery> lotteries = lotteryServiceFacade.getMyLottery(wxMessage.getFromUserName(), LotteryType.SSQ, 1);
-			
-			if (CollectionUtils.isNotEmpty(lotteries)) {
-				Lottery myLottery = lotteries.get(0);
-				
-				int period = myLottery.getPeriods().get(0);
-				LotteryOpenData openInfo = lotteryServiceFacade.getOpenInfo(LotteryType.SSQ, period);
-				
-				NewsBuilder builder = WxMpXmlOutMessage.NEWS().toUser(wxMessage.getFromUserName()).fromUser(wxMessage.getToUserName());
-				
-				WxMpXmlOutNewsMessage.Item title = new WxMpXmlOutNewsMessage.Item();
-				title.setTitle("您的最新投注记录");
-				title.setDescription("");
-				title.setPicUrl("");
-				title.setUrl("");
-				
-				builder.addArticle(title);
-				
-				WxMpXmlOutNewsMessage.Item content = new WxMpXmlOutNewsMessage.Item();
-				content.setDescription("");
-				content.setPicUrl("");
-				content.setUrl("");
-				String titleStr = "双色球 第" + period + "期 \n";
-				titleStr += "购买日期: " + DateTimeUtils.formatSqlDateTime(myLottery.getCreateTime()) + "\n";
-				titleStr += "开奖日期: " + openInfo.getOpentime();
-				titleStr += "中奖结果: " + getLotteryState(myLottery);
-				titleStr += "投注号码: \n";
-				for (LotteryNumber lotteryNumber : myLottery.getNumbers()) {
-					titleStr += "    " + lotteryNumber.getNumber().replaceAll(",", " ").replaceAll("+", " + ") + "\n";
-				}
-				
-				content.setTitle(titleStr);
-				
-//				response = builder.addArticle(article).build();
-			}
-		} catch (ServiceException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return response;
-	}
-
-	private String getLotteryState(Lottery lottery) {
-		String stateStr = "";
-		
-		// 已出奖
-		if (lottery.getTicketState() == TicketState.Prized) {
-			if (StringUtils.isNotBlank(lottery.getPrizeInfo()) && lottery.getPrizeBonus() > 0) {
-//				stateStr += "中奖结果: " + getLotteryState(myLottery);
-				stateStr = "中奖";
-			}
-		}
-		// 未出奖
-		else {
-			
-		}
-//		lottery.getTicketState().getName() + ((StringUtils.isBlank(lottery.getPrizeInfo())) ? )
-		return null;
-	}
-
-	private WxMpXmlOutMessage getDrawNotice(WxMpXmlMessage wxMessage) {
-		WxMpXmlOutMessage response = null;
-		try {
-			LotteryOpenData latestOpenInfo = lotteryServiceFacade.getLatestOpenInfo(LotteryType.SSQ);
-			
-			WxMpXmlOutNewsMessage.Item article = new WxMpXmlOutNewsMessage.Item();
-			article = new WxMpXmlOutNewsMessage.Item();
-			article.setTitle("双色球 第" +latestOpenInfo.getExpect() + "期开奖公告");
-			
-			String desc = latestOpenInfo.getOpencode().replaceAll("+", " + ").replaceAll(",", " ");
-			desc += "\n\n";
-			desc += "开奖时间: " + latestOpenInfo.getOpentime();
-			article.setDescription(desc);
-			article.setPicUrl("");
-			article.setUrl("");
-			
-			WxMpXmlOutMessage.NEWS().toUser(wxMessage.getFromUserName()).fromUser(wxMessage.getToUserName()).addArticle(article).build();
-		} catch (ServiceException e) {
-			e.printStackTrace();
+//			response = getMyLottery(wxMessage);
 		}
 		
 		return response;
@@ -177,11 +87,11 @@ public class WxMpEventHandler implements WxMpMessageHandler {
 
 	private WxMpXmlOutMessage handleSubscribe(WxMpXmlMessage wxMessage) {
 		// 保存用户
-		try {
-			userService.createUser(wxMessage.getFromUserName(), RoleType.CUSTOMER);
-		} catch (ServiceException e) {
-			
-		}
+//		try {
+//			userService.createUser(wxMessage.getFromUserName(), RoleType.CUSTOMER);
+//		} catch (ServiceException e) {
+//			
+//		}
 		
 		return null;
 

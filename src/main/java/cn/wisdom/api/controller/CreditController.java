@@ -7,10 +7,9 @@
  */
 package cn.wisdom.api.controller;
 
-import me.chanjar.weixin.mp.bean.result.WxMpUser;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,10 +17,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import cn.wisdom.api.response.CreditAPIResult;
 import cn.wisdom.common.model.JsonDocument;
-import cn.wisdom.dao.vo.AppProperty;
-import cn.wisdom.service.UserService;
+import cn.wisdom.dao.vo.CreditApply;
+import cn.wisdom.service.CreditService;
+import cn.wisdom.service.context.SessionContext;
 import cn.wisdom.service.exception.ServiceException;
-import cn.wisdom.service.wx.WXService;
 
 /**
  * UsersController provides restful APIs of user
@@ -37,16 +36,25 @@ import cn.wisdom.service.wx.WXService;
 public class CreditController
 {
     @Autowired
-    private UserService userService;
-    
-    @Autowired
-    private WXService wxService;
+    private CreditService creditService;
 
     private static final JsonDocument SUCCESS = CreditAPIResult.SUCCESS;
-    
-    @Autowired
-    private AppProperty appProperties;
 
+    /**
+     * 账户概况
+     * 
+     * @return
+     * @throws ServiceException
+     */
+    @RequestMapping(method = RequestMethod.GET, value = "/account")
+    @ResponseBody
+    public JsonDocument getAccountProfile() throws ServiceException
+    {
+    	creditService.getAccountProfile(SessionContext.getCurrentUser());
+    	
+        return SUCCESS;
+    }
+    
     /**
      * 申请借款
      * 
@@ -55,10 +63,15 @@ public class CreditController
      */
     @RequestMapping(method = RequestMethod.POST, value = "/apply")
     @ResponseBody
-    public JsonDocument applyCredit(@RequestParam String code) throws ServiceException
+    public JsonDocument applyCredit(@RequestBody String code) throws ServiceException
     {
-    	WxMpUser wxMpUser = wxService.getWxMpUserByOauthCode(code);
-        return new CreditAPIResult(wxMpUser);
+    	CreditApply creditApply = new CreditApply();
+    	creditApply.setAmount(amount);
+    	creditApply.setMonth(month);
+    	
+    	creditApply = creditService.applyCreditStep1();
+    	
+    	return SUCCESS;
     }
     
     /**
