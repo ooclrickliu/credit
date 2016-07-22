@@ -81,9 +81,7 @@ public class UsersController
     	
     	// set submit info into user.
     	user.setRealName(userStuff1.getRealName());
-    	user.setProvince(userStuff1.getProvince());
-    	user.setCity(userStuff1.getCity());
-    	user.setDistinct(userStuff1.getDistinct());
+    	user.setAddress(userStuff1.getAddress());;
     	user.setMaritalStatus(userStuff1.getMaritalStatus());
     	user.setDegree(userStuff1.getDegree());
     	

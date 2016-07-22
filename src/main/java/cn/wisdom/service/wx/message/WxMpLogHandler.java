@@ -2,6 +2,8 @@ package cn.wisdom.service.wx.message;
 
 import java.util.Map;
 
+import org.springframework.stereotype.Component;
+
 import me.chanjar.weixin.common.exception.WxErrorException;
 import me.chanjar.weixin.common.session.WxSessionManager;
 import me.chanjar.weixin.mp.api.WxMpMessageHandler;
@@ -11,6 +13,7 @@ import me.chanjar.weixin.mp.bean.WxMpXmlOutMessage;
 import cn.wisdom.common.log.Logger;
 import cn.wisdom.common.log.LoggerFactory;
 
+@Component
 public class WxMpLogHandler implements WxMpMessageHandler {
 
 	private Logger logger = LoggerFactory.getLogger(WxMpLogHandler.class.getName());

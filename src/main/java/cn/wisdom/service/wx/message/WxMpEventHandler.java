@@ -1,6 +1,5 @@
 package cn.wisdom.service.wx.message;
 
-import java.util.List;
 import java.util.Map;
 
 import me.chanjar.weixin.common.api.WxConsts;
@@ -10,17 +9,15 @@ import me.chanjar.weixin.mp.api.WxMpMessageHandler;
 import me.chanjar.weixin.mp.api.WxMpService;
 import me.chanjar.weixin.mp.bean.WxMpXmlMessage;
 import me.chanjar.weixin.mp.bean.WxMpXmlOutMessage;
-import me.chanjar.weixin.mp.bean.WxMpXmlOutNewsMessage;
-import me.chanjar.weixin.mp.bean.outxmlbuilder.NewsBuilder;
+import me.chanjar.weixin.mp.bean.WxMpXmlOutTextMessage;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import cn.wisdom.common.log.Logger;
 import cn.wisdom.common.log.LoggerFactory;
-import cn.wisdom.common.utils.CollectionUtils;
-import cn.wisdom.common.utils.DateTimeUtils;
 import cn.wisdom.common.utils.StringUtils;
+import cn.wisdom.dao.constant.RoleType;
 import cn.wisdom.service.UserService;
 import cn.wisdom.service.exception.ServiceException;
 import cn.wisdom.service.wx.WXService;
@@ -37,15 +34,17 @@ public class WxMpEventHandler implements WxMpMessageHandler {
 //	private static final String EVENT_KEY_SCAN = "qrscene_";
 	
 	private Logger logger = LoggerFactory.getLogger(this.getClass().getName());
+	
+	private static final WxMpXmlOutTextMessage success = new WxMpXmlOutTextMessage();
+	
+	static {
+		success.setContent("success");
+	}
 
 	@Override
 	public WxMpXmlOutMessage handle(WxMpXmlMessage wxMessage,
 			Map<String, Object> context, WxMpService wxMpService,
 			WxSessionManager sessionManager) throws WxErrorException {
-
-		logger.info("====== Fired event ======");
-		logger.info(wxMessage.toString());
-		logger.info("=========================");
 		
 		WxMpXmlOutMessage response = null;
 		
@@ -87,13 +86,15 @@ public class WxMpEventHandler implements WxMpMessageHandler {
 
 	private WxMpXmlOutMessage handleSubscribe(WxMpXmlMessage wxMessage) {
 		// 保存用户
-//		try {
-//			userService.createUser(wxMessage.getFromUserName(), RoleType.CUSTOMER);
-//		} catch (ServiceException e) {
-//			
-//		}
-		
-		return null;
+		try {
+			System.out.println("========" + userService == null);
+			System.out.println("========" + wxMessage.getFromUserName());
+			
+			userService.createUser(wxMessage.getFromUserName(), RoleType.CUSTOMER);
+		} catch (ServiceException e) {
+			logger.error("failed handle subscribe event.", e);
+		}
+		return success;
 
 	}
 

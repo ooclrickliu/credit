@@ -7,13 +7,13 @@ import javax.annotation.PostConstruct;
 import me.chanjar.weixin.common.api.WxConsts;
 import me.chanjar.weixin.common.exception.WxErrorException;
 import me.chanjar.weixin.mp.api.WxMpInMemoryConfigStorage;
-import me.chanjar.weixin.mp.api.WxMpMessageHandler;
 import me.chanjar.weixin.mp.api.WxMpMessageRouter;
 import me.chanjar.weixin.mp.api.WxMpService;
 import me.chanjar.weixin.mp.api.WxMpServiceImpl;
 import me.chanjar.weixin.mp.bean.result.WxMpOAuth2AccessToken;
 import me.chanjar.weixin.mp.bean.result.WxMpUser;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import cn.wisdom.service.wx.message.WxMpEventHandler;
@@ -28,6 +28,15 @@ public class WXServiceImpl implements WXService {
 	private WxMpService wxMpService;
 
 	private WxMpMessageRouter wxMpMessageRouter;
+	
+	@Autowired
+	private WxMpLogHandler logHandler;
+	
+	@Autowired
+	private WxMpTextHandler textHandler;
+	
+	@Autowired
+	private WxMpEventHandler eventHandler;
 
 	@PostConstruct
 	public void init() {
@@ -38,10 +47,6 @@ public class WXServiceImpl implements WXService {
 		wxConfig = config;
 		wxMpService = new WxMpServiceImpl();
 		wxMpService.setWxMpConfigStorage(config);
-
-		WxMpMessageHandler logHandler = new WxMpLogHandler();
-		WxMpMessageHandler textHandler = new WxMpTextHandler();
-		WxMpMessageHandler eventHandler = new WxMpEventHandler();
 
 		wxMpMessageRouter = new WxMpMessageRouter(wxMpService);
 		wxMpMessageRouter.rule().handler(logHandler).next()

@@ -44,14 +44,8 @@ public class User extends BaseEntity
 	@Column("person_id_img_url")
 	private String personIdImgUrl;
 	
-	@Column("province")
-    private String province;
-
-	@Column("city")
-    private String city;
-
-	@Column("country")
-    private String distinct;
+	@Column("address")
+    private String address;
 	
 	@Column("marital_status")
 	private String maritalStatusValue;
@@ -119,30 +113,6 @@ public class User extends BaseEntity
 	
 	public User(WxMpUser wxMpUser) {
 		this.openid = wxMpUser.getOpenId();
-	}
-
-	public String getProvince() {
-		return province;
-	}
-
-	public void setProvince(String province) {
-		this.province = province;
-	}
-
-	public String getCity() {
-		return city;
-	}
-
-	public void setCity(String city) {
-		this.city = city;
-	}
-
-	public String getDistinct() {
-		return distinct;
-	}
-
-	public void setDistinct(String distinct) {
-		this.distinct = distinct;
 	}
 
 	public String getOpenid() {
@@ -352,5 +322,25 @@ public class User extends BaseEntity
 
 	public void setHeadImgUrl(String headImgUrl) {
 		this.headImgUrl = headImgUrl;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public String getUserStateValue() {
+		return userStateValue;
+	}
+
+	public void setUserStateValue(String userStateValue) {
+		this.userStateValue = userStateValue;
+	}
+
+	public String getDegreeValue() {
+		return degreeValue;
 	}
 }
