@@ -23,6 +23,7 @@ import cn.wisdom.common.utils.StringUtils;
 import cn.wisdom.dao.UserDao;
 import cn.wisdom.dao.constant.RoleType;
 import cn.wisdom.dao.constant.UserState;
+import cn.wisdom.dao.vo.AppProperty;
 import cn.wisdom.dao.vo.User;
 import cn.wisdom.service.exception.ServiceException;
 import cn.wisdom.service.wx.WXService;
@@ -43,6 +44,9 @@ public class UserServiceImpl implements UserService
 	
 	@Autowired
 	private WXService wxService;
+	
+	@Autowired
+	private AppProperty appProperty;
 
     private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class.getName());
 
@@ -54,7 +58,7 @@ public class UserServiceImpl implements UserService
 		user.setOpenid(openId);
 		
 		//关注即有3000额度
-		user.setCreditLine(3000);
+		user.setCreditLine(appProperty.defaultCreditLine);
 		
 		user.setUserState(UserState.Subscribe);
 		
@@ -193,7 +197,7 @@ public class UserServiceImpl implements UserService
 	{
 		Random random = new Random();
 		
-		return random.nextInt(7000) + 3000;
+		return random.nextInt((int) (appProperty.maxCreditLine - appProperty.minCreditLine)) + appProperty.minCreditLine;
 	}
 
 	@Override

@@ -1,5 +1,6 @@
 package cn.wisdom.service;
 
+import java.sql.Timestamp;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,13 @@ public class DefaultCreditCalculator implements CreditCalculator {
 		// 2. commission
 		
 		
+	}
+
+	@Override
+	public float calculateInterest(float amount, Timestamp effectiveTime,
+			float creditRatePerDay) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 }

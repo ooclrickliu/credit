@@ -5,26 +5,29 @@ import java.sql.Timestamp;
 import cn.wisdom.dao.annotation.Column;
 import cn.wisdom.dao.constant.ApplyState;
 
-public class CreditPayRecord extends CreditApply {
+public class CreditPayRecord extends BaseEntity {
 
 	@Column("applyId")
     private long applyId;
 	
 	@Column("credit_base")
-	private float creditBase;
+	private float creditBase;  //待还本金
 	
 	@Column("credit_interest")
-	private float interest;
+	private float interest;   //待还利息
 	
 	@Column("returned_amount")
-	private float returnedAmount;
+	private float returnedAmount;  //本次还款
 	
 	@Column("remain_base")
-	private float remainBase;
+	private float remainBase;   //剩余未还本金
 	
 	@Column("return_state")
 	private String returnStateValue;
 	private ApplyState returnState;
+	
+	@Column("pay_img_url")
+	private String payImgUrl;  //支付截图
 	
 	@Column("return_time")
 	private Timestamp returnTime;
@@ -95,5 +98,13 @@ public class CreditPayRecord extends CreditApply {
 
 	public void setReturnStateValue(String returnStateValue) {
 		this.returnStateValue = returnStateValue;
+	}
+
+	public String getPayImgUrl() {
+		return payImgUrl;
+	}
+
+	public void setPayImgUrl(String payImgUrl) {
+		this.payImgUrl = payImgUrl;
 	}
 }

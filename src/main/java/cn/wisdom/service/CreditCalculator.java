@@ -1,5 +1,7 @@
 package cn.wisdom.service;
 
+import java.sql.Timestamp;
+
 import cn.wisdom.dao.vo.CreditApply;
 
 public interface CreditCalculator {
@@ -10,4 +12,7 @@ public interface CreditCalculator {
 	 * @param creditApply
 	 */
 	void calculateFee(CreditApply creditApply);
+
+	float calculateInterest(float amount, Timestamp effectiveTime,
+			float creditRatePerDay);
 }

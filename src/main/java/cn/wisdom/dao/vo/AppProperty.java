@@ -26,4 +26,13 @@ public class AppProperty
 
 	@Value("${credit.rate.day}")
 	public float creditRatePerDay;
+	
+	@Value("${credit.line.default}")
+	public float defaultCreditLine;
+	
+	@Value("${credit.line.min}")
+	public float minCreditLine;
+	
+	@Value("${credit.line.max}")
+	public float maxCreditLine;
 }
