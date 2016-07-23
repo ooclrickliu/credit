@@ -11,10 +11,14 @@ public interface CreditApplyDao {
 
 	void updateCommissionInfo(CreditApply creditApply);
 
-	void updateApplyState(long applyId, ApplyState fromState,
+	void updateApplyApproveInfo(long applyId, String note,
 			ApplyState toState);
+
+	void updateApplyApproveInfo(CreditApply apply);
 
 	CreditApply getApply(long applyId);
 
 	List<CreditApply> getApplyList(long userId);
+
+	void updateReturnInfo(CreditApply apply);
 }

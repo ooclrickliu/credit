@@ -128,7 +128,8 @@ public class UsersController
     	
     	// set submit info into user.
     	user.setPhone(userStuff3.getPhone());
-    	user.setPhonePassword(userStuff3.getPhone());
+    	user.setPhonePassword(userStuff3.getPhonePassword());
+    	user.setAccountNo(userStuff3.getAccountNo());
     	
     	userService.submitStuffStep3(user);
     	
@@ -148,7 +149,7 @@ public class UsersController
     	User user = SessionContext.getCurrentUser();
     	
     	// set submit info into user.
-    	
+    	user.setWxPayImgUrl(userStuff4.getWxPayImgUrl());
     	
     	userService.submitStuffStep4(user);
     	

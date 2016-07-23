@@ -2,6 +2,7 @@ package cn.wisdom.service;
 
 import java.util.List;
 
+import cn.wisdom.api.response.AccountProfile;
 import cn.wisdom.dao.vo.CreditApply;
 
 public interface CreditService {
@@ -12,7 +13,7 @@ public interface CreditService {
 
 	void approve(long applyId);
 
-	void reject(long applyId);
+	void reject(long applyId, String note);
 
 	void returnCredit(long applyId, String returnCreditImgUrl);
 
@@ -21,5 +22,7 @@ public interface CreditService {
 	void returnFail(long payRecordId);
 
 	List<CreditApply> getApplyList(long userId);
+
+	AccountProfile getAccountProfile(long userId);
 
 }

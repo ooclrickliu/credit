@@ -190,6 +190,10 @@ public class User extends BaseEntity
 	}
 
 	public MaritalStatus getMaritalStatus() {
+		if (maritalStatus == null && StringUtils.isNotBlank(maritalStatusValue)) {
+			maritalStatus = MaritalStatus.valueOf(maritalStatusValue);
+		}
+		
 		return maritalStatus;
 	}
 
@@ -202,6 +206,9 @@ public class User extends BaseEntity
 	}
 
 	public Degree getDegree() {
+		if (degree == null && StringUtils.isNotBlank(degreeValue)) {
+			degree = Degree.valueOf(degreeValue);
+		}
 		return degree;
 	}
 
@@ -306,7 +313,7 @@ public class User extends BaseEntity
 	}
 
 	public UserState getUserState() {
-		if (userState == null) {
+		if (userState == null && StringUtils.isNotBlank(userStateValue)) {
 			userState = UserState.valueOf(userStateValue);
 		}
 		

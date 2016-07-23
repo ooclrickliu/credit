@@ -19,19 +19,23 @@ public class CreditApplyDaoImpl implements CreditApplyDao {
 
 	private static final String SQL_UPDATE_COMMISSION_INFO = "update credit_apply set commission_img_url = ?, update_time = current_timestamp where id = ?";
 
-	private static final String SQL_UPDATE_APPLY_STATE = "update credit_apply set apply_state = ?, update_time = current_timestamp where id = ? and apply_state = ?";
+	private static final String SQL_UPDATE_APPLY_APPROVE_INFO = "update credit_apply set due_time = ?, apply_state = ?, update_time = current_timestamp where id = ? and apply_state = 'Approving'";
+
+	private static final String SQL_UPDATE_APPLY_APPROVE_REJECT_INFO = "update credit_apply set approve_note = ?, apply_state = ?, update_time = current_timestamp where id = ? and apply_state = 'Approving'";
+
+	private static final String SQL_UPDATE_APPLY_RETURN_INFO = "update credit_apply set returned_base = ?, apply_state = ?, update_time = current_timestamp where id = ? and apply_state = 'Approved'";
 
 	private static final String SQL_GET_CREDIT_APPLY_PREFIX = "select * from credit_apply ";
 
 	private static final String SQL_GET_APPLY_BY_ID = SQL_GET_CREDIT_APPLY_PREFIX
 			+ "where id = ?";
-	
+
 	private static final String SQL_GET_APPLY_LIST_BY_USER = SQL_GET_CREDIT_APPLY_PREFIX
-			+ "where user_id = ? and ";
+			+ "where user_id = ?";
 
 	private static final DaoRowMapper<CreditApply> creditApplyMapper = new DaoRowMapper<CreditApply>(
 			CreditApply.class);
-	
+
 	@Override
 	public void saveCreditApply(CreditApply creditApply) {
 		String errMsg = "Failed to save new credit appy, userId: "
@@ -53,12 +57,22 @@ public class CreditApplyDaoImpl implements CreditApplyDao {
 	}
 
 	@Override
-	public void updateApplyState(long applyId, ApplyState fromState,
+	public void updateApplyApproveInfo(long applyId, String note,
 			ApplyState toState) {
 
 		String errMsg = "Failed to update credit apply state, id: " + applyId;
-		daoHelper.update(SQL_UPDATE_APPLY_STATE, errMsg, toState, applyId,
-				fromState);
+		daoHelper.update(SQL_UPDATE_APPLY_APPROVE_REJECT_INFO, errMsg, note,
+				toState.toString(), applyId);
+	}
+
+	@Override
+	public void updateApplyApproveInfo(CreditApply apply) {
+
+		String errMsg = "Failed to update credit apply state, id: "
+				+ apply.getId();
+		daoHelper.update(SQL_UPDATE_APPLY_APPROVE_INFO, errMsg,
+				apply.getDueTime(), apply.getApplyState().toString(),
+				apply.getId());
 	}
 
 	@Override
@@ -73,8 +87,22 @@ public class CreditApplyDaoImpl implements CreditApplyDao {
 
 	@Override
 	public List<CreditApply> getApplyList(long userId) {
-		// TODO Auto-generated method stub
-		return null;
+
+		String errMsg = "Failed to get credit apply of user: " + userId;
+		List<CreditApply> creditApplies = daoHelper.queryForList(
+				SQL_GET_APPLY_LIST_BY_USER, creditApplyMapper, errMsg, userId);
+
+		return creditApplies;
+	}
+
+	@Override
+	public void updateReturnInfo(CreditApply apply) {
+
+		String errMsg = "Failed to update credit apply returned info, id: "
+				+ apply.getId();
+		daoHelper.update(SQL_UPDATE_APPLY_RETURN_INFO, errMsg,
+				apply.getReturnedBase(), apply.getApplyState().toString(),
+				apply.getId());
 	}
 
 }

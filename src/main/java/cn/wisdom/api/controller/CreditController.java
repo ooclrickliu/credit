@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import cn.wisdom.api.request.CreditRequest;
+import cn.wisdom.api.response.AccountProfile;
 import cn.wisdom.api.response.CreditAPIResult;
 import cn.wisdom.common.model.JsonDocument;
 import cn.wisdom.dao.vo.CreditApply;
@@ -53,7 +54,9 @@ public class CreditController {
 	@RequestMapping(method = RequestMethod.GET, value = "/account")
 	@ResponseBody
 	public JsonDocument getAccountProfile() throws ServiceException {
-		// creditService.getAccountProfile(SessionContext.getCurrentUser());
+		User currentUser = SessionContext.getCurrentUser();
+		
+		AccountProfile accountProfile = creditService.getAccountProfile(currentUser.getId());
 
 		return SUCCESS;
 	}
@@ -121,9 +124,9 @@ public class CreditController {
 	 */
 	@RequestMapping(method = RequestMethod.POST, value = "/apply/reject")
 	@ResponseBody
-	public JsonDocument rejectApply(@RequestParam long applyId)
+	public JsonDocument rejectApply(@RequestParam long applyId, @RequestParam String note)
 			throws ServiceException {
-		creditService.reject(applyId);
+		creditService.reject(applyId, note);
 		return SUCCESS;
 	}
 
@@ -135,7 +138,7 @@ public class CreditController {
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/apply/list")
 	@ResponseBody
-	public JsonDocument listApplyOfCustomer()
+	public JsonDocument listApplyOfUser()
 			throws ServiceException {
 
 		User user = SessionContext.getCurrentUser();

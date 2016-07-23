@@ -2,6 +2,7 @@ package cn.wisdom.dao.vo;
 
 import java.sql.Timestamp;
 
+import cn.wisdom.common.utils.StringUtils;
 import cn.wisdom.dao.annotation.Column;
 import cn.wisdom.dao.constant.ApplyState;
 
@@ -12,6 +13,9 @@ public class CreditApply extends BaseEntity {
 	
 	@Column("amount")
 	private float amount;
+	
+	@Column("returned_base")
+	private float returnedBase;
 	
 	@Column("month")
 	private int month;
@@ -77,7 +81,7 @@ public class CreditApply extends BaseEntity {
 	}
 
 	public ApplyState getApplyState() {
-		if (applyState == null) {
+		if (applyState == null && StringUtils.isNotBlank(applyStateValue)) {
 			applyState = ApplyState.valueOf(applyStateValue);
 		}
 		return applyState;
@@ -141,6 +145,14 @@ public class CreditApply extends BaseEntity {
 
 	public void setInterest(float interest) {
 		this.interest = interest;
+	}
+
+	public float getReturnedBase() {
+		return returnedBase;
+	}
+
+	public void setReturnedBase(float returnedBase) {
+		this.returnedBase = returnedBase;
 	}
 
 }

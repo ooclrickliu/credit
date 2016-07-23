@@ -1,13 +1,17 @@
 package cn.wisdom.service;
 
 import java.io.File;
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 
 import me.chanjar.weixin.common.exception.WxErrorException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import cn.wisdom.api.response.AccountProfile;
 import cn.wisdom.common.log.Logger;
 import cn.wisdom.common.log.LoggerFactory;
 import cn.wisdom.common.utils.DateTimeUtils;
@@ -89,14 +93,20 @@ public class CreditServiceImpl implements CreditService {
 	@Override
 	public void approve(long applyId) {
 
-		creditApplyDao.updateApplyState(applyId, ApplyState.Approving,
-				ApplyState.Approved);
+		CreditApply apply = creditApplyDao.getApply(applyId);
+
+		Date today = new Date();
+		Timestamp dueTime = DateTimeUtils.toTimestamp(DateTimeUtils.addMonths(
+				today, apply.getMonth()));
+		apply.setDueTime(dueTime);
+
+		creditApplyDao.updateApplyApproveInfo(apply);
 	}
 
 	@Override
-	public void reject(long applyId) {
+	public void reject(long applyId, String note) {
 
-		creditApplyDao.updateApplyState(applyId, ApplyState.Approving,
+		creditApplyDao.updateApplyApproveInfo(applyId, note,
 				ApplyState.ApproveFailed);
 
 	}
@@ -152,33 +162,52 @@ public class CreditServiceImpl implements CreditService {
 	}
 
 	@Override
+	@Transactional
 	public void confirmReturn(long payRecordId, float returnAmount) {
-		
+
+		// update credit pay record
 		CreditPayRecord payRecord = creditPayDao.getPayRecord(payRecordId);
 		payRecord.setReturnedAmount(returnAmount);
-		
-		float remainBase = payRecord.getRemainBase() - (returnAmount - payRecord.getInterest());
+
+		float remainBase = payRecord.getRemainBase()
+				- (returnAmount - payRecord.getInterest());
 		if (remainBase < 0) {
 			remainBase = 0;
 		}
 		payRecord.setRemainBase(remainBase);
 		payRecord.setReturnState(ApplyState.Approved);
-		
+
 		creditPayDao.updatePayRecordReturnInfo(payRecord);
+
+		// update credit apply
+		CreditApply apply = creditApplyDao.getApply(payRecord.getApplyId());
+		apply.setReturnedBase(apply.getReturnedBase()
+				+ (returnAmount - payRecord.getInterest()));
+		if (apply.getAmount() <= apply.getReturnedBase()) {
+			apply.setApplyState(ApplyState.ReturnDone);
+		}
+		creditApplyDao.updateReturnInfo(apply);
 	}
 
 	@Override
 	public void returnFail(long payRecordId) {
-		
-		creditPayDao.updatePayRecordState(payRecordId, ApplyState.Approving, ApplyState.ApproveFailed);
+
+		creditPayDao.updatePayRecordState(payRecordId, ApplyState.Approving,
+				ApplyState.ApproveFailed);
 	}
 
 	@Override
 	public List<CreditApply> getApplyList(long userId) {
-		
+
 		List<CreditApply> applyList = creditApplyDao.getApplyList(userId);
-		
+
 		return applyList;
+	}
+
+	@Override
+	public AccountProfile getAccountProfile(long userId) {
+
+		return null;
 	}
 
 }
