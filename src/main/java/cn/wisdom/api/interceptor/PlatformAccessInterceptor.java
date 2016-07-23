@@ -55,18 +55,22 @@ public class PlatformAccessInterceptor extends HandlerInterceptorAdapter
         User user = null;
         String openId = HttpUtils.getParamValue(request, OPENID);
         if (StringUtils.isNotBlank(openId)) {
-        	user = userService.getUserByOpenId(openId);
+        	System.out.println("-------openId: " + openId);
         	
-        	if (user == null) {
-                String code = HttpUtils.getParamValue(request, OAUTH_CODE);
-                if (StringUtils.isNotBlank(code)) {
-                	user = userService.getUserByOauthCode(code);
-				}
+        	user = userService.getUserByOpenId(openId); 
+        	
+		}
+    	if (user == null) {
+            String code = HttpUtils.getParamValue(request, OAUTH_CODE);
+            if (StringUtils.isNotBlank(code)) {
+            	System.out.println("-------code: " + code);
+            	user = userService.getUserByOauthCode(code);
 			}
 		}
         
         if (user == null) {
         	writeResponse(response, ServiceErrorCode.NOT_SUBSCRIB);
+        	return false;
 		}
         else {
         	initSessionContext(user);

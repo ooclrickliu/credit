@@ -88,7 +88,11 @@ public class UserServiceImpl implements UserService {
 		User user = null;
 		try {
 			WxMpOAuth2AccessToken oauth2getAccessToken = wxService.getWxMpService().oauth2getAccessToken(oauthCode);
-			WxMpUser wxMpUser = wxService.getWxMpService().oauth2getUserInfo(oauth2getAccessToken, "cn-Zh");
+			
+			System.out.println("----------oauth:" + oauth2getAccessToken);
+			
+//			WxMpUser wxMpUser = wxService.getWxMpService().oauth2getUserInfo(oauth2getAccessToken, null);
+			WxMpUser wxMpUser = wxService.getWxMpService().userInfo(oauth2getAccessToken.getOpenId(), null);
 			
 			user = userDao.getUserByOpenid(wxMpUser.getOpenId());
 			if (user != null && !(StringUtils.equals(user.getNickName(), wxMpUser.getNickname()) &&

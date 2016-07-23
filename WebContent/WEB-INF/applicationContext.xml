@@ -30,7 +30,7 @@
 		<mvc:interceptor>
 			<mvc:mapping path="/*/**" />
 			<mvc:exclude-mapping path="/users/list" />
-			<bean class="cn.wisdom.lottery.payment.api.interceptor.PlatformAccessInterceptor" />
+			<bean class="cn.wisdom.api.interceptor.PlatformAccessInterceptor" />
 		</mvc:interceptor>
 	</mvc:interceptors>
 </beans>

@@ -17,7 +17,7 @@ public class UserDaoImpl implements UserDao {
 
 	private static final String SQL_SAVE_USER = "insert ignore into user(openid, role, credit_line, user_state, update_time) values (?, ?, ?, ?, current_timestamp)";
 
-	private static final String SQL_UPDATE_USER_WX_INFO = "update user set nick_name = ?, headImgUrl = ?, update_time = current_timestamp where openid = ?";
+	private static final String SQL_UPDATE_USER_WX_INFO = "update user set nick_name = ?, head_img_url = ?, update_time = current_timestamp where openid = ?";
 
 	private static final String SQL_UPDATE_USER_STUFF_INFO1 = "update user set real_name = ?, id_face_img_url = ?, id_back_img_url = ?, person_id_img_url = ?, address = ?, marital_status = ?, degree = ?, update_time = current_timestamp where openid = ?";
 
