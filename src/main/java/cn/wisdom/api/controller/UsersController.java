@@ -9,8 +9,6 @@ package cn.wisdom.api.controller;
 
 import java.util.List;
 
-import me.chanjar.weixin.mp.bean.result.WxMpUser;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,7 +26,6 @@ import cn.wisdom.dao.vo.User;
 import cn.wisdom.service.UserService;
 import cn.wisdom.service.context.SessionContext;
 import cn.wisdom.service.exception.ServiceException;
-import cn.wisdom.service.wx.WXService;
 
 /**
  * UsersController provides restful APIs of user
@@ -45,9 +42,6 @@ public class UsersController
 {
     @Autowired
     private UserService userService;
-    
-    @Autowired
-    private WXService wxService;
 
     private static final JsonDocument SUCCESS = CreditAPIResult.SUCCESS;
     @Autowired
@@ -63,8 +57,8 @@ public class UsersController
     @ResponseBody
     public JsonDocument getCurrentUser(@RequestParam String code) throws ServiceException
     {
-    	WxMpUser wxMpUser = wxService.getWxMpUserByOauthCode(code);
-        return new CreditAPIResult(wxMpUser);
+    	User user = SessionContext.getCurrentUser();
+        return new CreditAPIResult(user);
     }
 
     /**

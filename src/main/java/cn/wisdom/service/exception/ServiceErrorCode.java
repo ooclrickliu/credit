@@ -22,7 +22,7 @@ public class ServiceErrorCode
     public static final String SYSTEM_UNEXPECTED = "SystemUnexpected";
     
     //user
-    public static final String NOT_LOGIN = "NotLogin";
+    public static final String NOT_SUBSCRIB = "NotSubscribe";
     public static final String NO_PERMISSION = "NoPermission";
     public static final String INVALID_ACCESS = "InvalidAccess";
     //public static final String INVALID_DATA_FORMAT = "InvalidDataFormat";

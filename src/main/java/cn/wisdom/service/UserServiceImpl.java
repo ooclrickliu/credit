@@ -8,10 +8,12 @@
 package cn.wisdom.service;
 
 import java.io.File;
+import java.text.MessageFormat;
 import java.util.List;
 import java.util.Random;
 
 import me.chanjar.weixin.common.exception.WxErrorException;
+import me.chanjar.weixin.mp.bean.result.WxMpOAuth2AccessToken;
 import me.chanjar.weixin.mp.bean.result.WxMpUser;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,11 +62,8 @@ public class UserServiceImpl implements UserService {
 
 		// 关注即有3000额度
 		user.setCreditLine(appProperty.defaultCreditLine);
-
 		user.setUserState(UserState.Subscribe);
 
-		System.out.println("========user: " + user.getCreditLine());
-		
 		userDao.save(user);
 	}
 
@@ -82,6 +81,28 @@ public class UserServiceImpl implements UserService {
 	public User getUserByOpenId(String openId) {
 
 		return userDao.getUserByOpenid(openId);
+	}
+
+	@Override
+	public User getUserByOauthCode(String oauthCode) {
+		User user = null;
+		try {
+			WxMpOAuth2AccessToken oauth2getAccessToken = wxService.getWxMpService().oauth2getAccessToken(oauthCode);
+			WxMpUser wxMpUser = wxService.getWxMpService().oauth2getUserInfo(oauth2getAccessToken, "cn-Zh");
+			
+			user = userDao.getUserByOpenid(wxMpUser.getOpenId());
+			if (user != null && !(StringUtils.equals(user.getNickName(), wxMpUser.getNickname()) &&
+					StringUtils.equals(user.getHeadImgUrl(), wxMpUser.getHeadImgUrl()))) {
+				user.setNickName(wxMpUser.getNickname());
+				user.setHeadImgUrl(wxMpUser.getHeadImgUrl());
+				
+				userDao.updateUserWxInfo(user);
+			}
+		} catch (WxErrorException e) {
+			String errMsg = MessageFormat.format("failed pass wx oauth and get user info, code: [{0}]", oauthCode);
+			logger.error(errMsg, e);
+		}
+		return user;
 	}
 
 	@Override

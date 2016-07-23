@@ -12,6 +12,4 @@ public interface WXService {
 	WxMpMessageRouter getWxMpMessageRouter();
 	
 	WxMpInMemoryConfigStorage getWxConfig();
-	
-	WxMpUser getWxMpUserByOauthCode(String oauthCode);
 }

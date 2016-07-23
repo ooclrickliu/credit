@@ -50,6 +50,14 @@ public interface UserService
 	 */
 	User getUserByOpenId(String openId);
 	
+	/**
+	 * 通过OAuth获取用户信息
+	 * 
+	 * @param oauthCode
+	 * @return
+	 */
+	User getUserByOauthCode(String oauthCode);
+	
 	/////////////////////////////////////////////
 
 
