@@ -20,5 +20,5 @@ public interface CreditPayDao {
 	void updatePayRecordState(long payRecordId, ApplyState approving,
 			ApplyState approvefailed);
 
-	void updatePayRecord(CreditPayRecord payRecord);
+	void updatePayRecordReturnInfo(CreditPayRecord payRecord);
 }

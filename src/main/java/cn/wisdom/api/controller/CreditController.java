@@ -7,6 +7,9 @@
  */
 package cn.wisdom.api.controller;
 
+
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,6 +22,7 @@ import cn.wisdom.api.request.CreditRequest;
 import cn.wisdom.api.response.CreditAPIResult;
 import cn.wisdom.common.model.JsonDocument;
 import cn.wisdom.dao.vo.CreditApply;
+import cn.wisdom.dao.vo.User;
 import cn.wisdom.service.CreditService;
 import cn.wisdom.service.context.SessionContext;
 import cn.wisdom.service.exception.ServiceException;
@@ -131,10 +135,13 @@ public class CreditController {
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/apply/list")
 	@ResponseBody
-	public JsonDocument listApplyOfCustomer(@RequestParam String code)
+	public JsonDocument listApplyOfCustomer()
 			throws ServiceException {
 
-		return SUCCESS;
+		User user = SessionContext.getCurrentUser();
+		List<CreditApply> applyList =  creditService.getApplyList(user.getId());
+		
+		return new CreditAPIResult(applyList);
 	}
 
 	/**

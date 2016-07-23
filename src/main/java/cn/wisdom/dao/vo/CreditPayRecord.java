@@ -7,7 +7,7 @@ import cn.wisdom.dao.constant.ApplyState;
 
 public class CreditPayRecord extends BaseEntity {
 
-	@Column("applyId")
+	@Column("apply_id")
     private long applyId;
 	
 	@Column("credit_base")

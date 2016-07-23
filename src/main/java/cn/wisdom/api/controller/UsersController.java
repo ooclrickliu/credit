@@ -79,6 +79,10 @@ public class UsersController
     	user.setMaritalStatus(userStuff1.getMaritalStatus());
     	user.setDegree(userStuff1.getDegree());
     	
+    	user.setIdFaceImgUrl(userStuff1.getIdFaceImgUrl());
+    	user.setIdBackImgUrl(userStuff1.getIdBackImgUrl());
+    	user.setPersonIdImgUrl(userStuff1.getPersonIdImgUrl());
+    	
     	userService.submitStuffStep1(user);
     	
         return SUCCESS;

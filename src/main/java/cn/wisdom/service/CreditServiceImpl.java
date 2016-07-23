@@ -1,6 +1,7 @@
 package cn.wisdom.service;
 
 import java.io.File;
+import java.util.List;
 
 import me.chanjar.weixin.common.exception.WxErrorException;
 
@@ -163,13 +164,21 @@ public class CreditServiceImpl implements CreditService {
 		payRecord.setRemainBase(remainBase);
 		payRecord.setReturnState(ApplyState.Approved);
 		
-		creditPayDao.updatePayRecord(payRecord);
+		creditPayDao.updatePayRecordReturnInfo(payRecord);
 	}
 
 	@Override
 	public void returnFail(long payRecordId) {
 		
 		creditPayDao.updatePayRecordState(payRecordId, ApplyState.Approving, ApplyState.ApproveFailed);
+	}
+
+	@Override
+	public List<CreditApply> getApplyList(long userId) {
+		
+		List<CreditApply> applyList = creditApplyDao.getApplyList(userId);
+		
+		return applyList;
 	}
 
 }

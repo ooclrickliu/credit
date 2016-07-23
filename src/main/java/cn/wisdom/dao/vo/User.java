@@ -8,6 +8,7 @@
 package cn.wisdom.dao.vo;
 
 import me.chanjar.weixin.mp.bean.result.WxMpUser;
+import cn.wisdom.common.utils.StringUtils;
 import cn.wisdom.dao.annotation.Column;
 import cn.wisdom.dao.constant.Degree;
 import cn.wisdom.dao.constant.MaritalStatus;
@@ -87,6 +88,14 @@ public class User extends BaseEntity
 	// step4:
 	@Column("wx_pay_img_url")
 	private String wxPayImgUrl;
+	
+	private boolean step1Done;
+	
+	private boolean step2Done;
+	
+	private boolean step3Done;
+	
+	private boolean step4Done;
 	
 	// wx
 	@Column("nick_name")
@@ -342,5 +351,57 @@ public class User extends BaseEntity
 
 	public String getDegreeValue() {
 		return degreeValue;
+	}
+
+	public boolean isStep1Done() {
+		step1Done = StringUtils.isNotBlank(this.getRealName())
+				&& StringUtils.isNotBlank(this.getIdBackImgUrl())
+				&& StringUtils.isNotBlank(this.getIdBackImgUrl())
+				&& StringUtils.isNotBlank(this.getPersonIdImgUrl())
+				&& StringUtils.isNotBlank(this.getAddress())
+				&& this.getMaritalStatus() != null && this.getDegree() != null;
+		
+		return step1Done;
+	}
+
+	public void setStep1Done(boolean step1Done) {
+		this.step1Done = step1Done;
+	}
+
+	public boolean isStep2Done() {
+		step2Done = StringUtils.isNotBlank(this.getRelativeName1())
+				&& StringUtils.isNotBlank(this.getRelativeName2())
+				&& StringUtils.isNotBlank(this.getRelativeRelation1())
+				&& StringUtils.isNotBlank(this.getRelativeRelation2())
+				&& StringUtils.isNotBlank(this.getRelativePhone1())
+				&& StringUtils.isNotBlank(this.getRelativePhone2());
+		
+		return step2Done;
+	}
+
+	public void setStep2Done(boolean step2Done) {
+		this.step2Done = step2Done;
+	}
+
+	public boolean isStep3Done() {
+		step3Done = StringUtils.isNotBlank(this.getPhone())
+				&& StringUtils.isNotBlank(this.getPhonePassword())
+				&& StringUtils.isNotBlank(this.getAccountNo());
+		
+		return step3Done;
+	}
+
+	public void setStep3Done(boolean step3Done) {
+		this.step3Done = step3Done;
+	}
+
+	public boolean isStep4Done() {
+		step4Done = StringUtils.isNotBlank(this.getWxPayImgUrl());
+		
+		return step4Done;
+	}
+
+	public void setStep4Done(boolean step4Done) {
+		this.step4Done = step4Done;
 	}
 }

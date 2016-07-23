@@ -1,5 +1,7 @@
 package cn.wisdom.service;
 
+import java.util.List;
+
 import cn.wisdom.dao.vo.CreditApply;
 
 public interface CreditService {
@@ -17,5 +19,7 @@ public interface CreditService {
 	void confirmReturn(long payRecordId, float returnAmount);
 
 	void returnFail(long payRecordId);
+
+	List<CreditApply> getApplyList(long userId);
 
 }

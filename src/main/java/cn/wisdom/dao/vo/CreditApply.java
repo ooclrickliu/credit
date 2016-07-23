@@ -2,14 +2,12 @@ package cn.wisdom.dao.vo;
 
 import java.sql.Timestamp;
 
-import org.springframework.web.multipart.MultipartFile;
-
 import cn.wisdom.dao.annotation.Column;
 import cn.wisdom.dao.constant.ApplyState;
 
 public class CreditApply extends BaseEntity {
 
-	@Column("userId")
+	@Column("user_id")
     private long userId;
 	
 	@Column("amount")
@@ -26,7 +24,6 @@ public class CreditApply extends BaseEntity {
 	
 	@Column("commission_img_url")
 	private String commissionImgUrl;
-	private MultipartFile commissionImg;
 	
 	@Column("apply_state")
 	private String applyStateValue;
@@ -136,14 +133,6 @@ public class CreditApply extends BaseEntity {
 
 	public void setCommissionImgUrl(String commissionImgUrl) {
 		this.commissionImgUrl = commissionImgUrl;
-	}
-
-	public MultipartFile getCommissionImg() {
-		return commissionImg;
-	}
-
-	public void setCommissionImg(MultipartFile commissionImg) {
-		this.commissionImg = commissionImg;
 	}
 
 	public float getInterest() {

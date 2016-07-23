@@ -23,7 +23,7 @@ public class UserDaoImpl implements UserDao {
 
 	private static final String SQL_UPDATE_USER_STUFF_INFO2 = "update user set relative_name1 = ?, relative_relation1 = ?, relative_phone1 = ?, relative_name2 = ?, relative_relation2 = ?, relative_phone2 = ?, update_time = current_timestamp where openid = ?";
 
-	private static final String SQL_UPDATE_USER_STUFF_INFO3 = "update user set phone = ?, phonePassword = ?, accountNo = ?, update_time = current_timestamp where openid = ?";
+	private static final String SQL_UPDATE_USER_STUFF_INFO3 = "update user set phone = ?, phone_password = ?, account_no = ?, update_time = current_timestamp where openid = ?";
 
 	private static final String SQL_UPDATE_USER_STUFF_INFO4 = "update user set wx_pay_img_url = ?, update_time = current_timestamp where openid = ?";
 

@@ -112,74 +112,78 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void submitStuffStep1(User user) {
 
-		if (isStuffInfo1Complete(user)) {
-			setUserCreditLine(user);
+//		if (!user.isStep1Done()) {
+//			
+//		}
+		setUserCreditLine(user);
 
-			// save upload file
-			try {
-				File idFaceImg = wxService.getWxMpService().mediaDownload(
-						user.getIdFaceImgUrl());
-				user.setIdFaceImgUrl(idFaceImg.getAbsolutePath());
-			} catch (WxErrorException e) {
-				logger.error("failed to upload idFaceImg", e);
-			}
-
-			try {
-				File idBackImg = wxService.getWxMpService().mediaDownload(
-						user.getIdBackImgUrl());
-				user.setIdBackImgUrl(idBackImg.getAbsolutePath());
-			} catch (WxErrorException e) {
-				logger.error("failed to upload idBackImg", e);
-			}
-
-			try {
-				File personIdImg = wxService.getWxMpService().mediaDownload(
-						user.getPersonIdImgUrl());
-				user.setPersonIdImgUrl(personIdImg.getAbsolutePath());
-			} catch (WxErrorException e) {
-				logger.error("failed to upload personIdImg", e);
-			}
-
-			userDao.updateUserStuffInfo1(user);
+		// save upload file
+		try {
+			File idFaceImg = wxService.getWxMpService().mediaDownload(
+					user.getIdFaceImgUrl());
+			user.setIdFaceImgUrl(idFaceImg.getAbsolutePath());
+		} catch (WxErrorException e) {
+			logger.error("failed to upload idFaceImg", e);
 		}
+
+		try {
+			File idBackImg = wxService.getWxMpService().mediaDownload(
+					user.getIdBackImgUrl());
+			user.setIdBackImgUrl(idBackImg.getAbsolutePath());
+		} catch (WxErrorException e) {
+			logger.error("failed to upload idBackImg", e);
+		}
+
+		try {
+			File personIdImg = wxService.getWxMpService().mediaDownload(
+					user.getPersonIdImgUrl());
+			user.setPersonIdImgUrl(personIdImg.getAbsolutePath());
+		} catch (WxErrorException e) {
+			logger.error("failed to upload personIdImg", e);
+		}
+
+		userDao.updateUserStuffInfo1(user);
 	}
 
 	@Override
 	public void submitStuffStep2(User user) {
 
-		if (isStuffInfo2Complete(user)) {
-			setUserCreditLine(user);
+//		if (!user.isStep2Done()) {
+//			
+//		}
+		setUserCreditLine(user);
 
-			userDao.updateUserStuffInfo2(user);
-		}
+		userDao.updateUserStuffInfo2(user);
 	}
 
 	@Override
 	public void submitStuffStep3(User user) {
 
-		if (isStuffInfo3Complete(user)) {
-			setUserCreditLine(user);
+//		if (!user.isStep3Done()) {
+//			
+//		}
+		setUserCreditLine(user);
 
-			userDao.updateUserStuffInfo3(user);
-		}
+		userDao.updateUserStuffInfo3(user);
 	}
 
 	@Override
 	public void submitStuffStep4(User user) {
 
-		if (isStuffInfo4Complete(user)) {
-			setUserCreditLine(user);
+//		if (user.isStep4Done()) {
+//			
+//		}
+		setUserCreditLine(user);
 
-			// save upload file
-			try {
-				File wxPayImg = wxService.getWxMpService().mediaDownload(
-						user.getWxPayImgUrl());
-				user.setWxPayImgUrl(wxPayImg.getAbsolutePath());
+		// save upload file
+		try {
+			File wxPayImg = wxService.getWxMpService().mediaDownload(
+					user.getWxPayImgUrl());
+			user.setWxPayImgUrl(wxPayImg.getAbsolutePath());
 
-				userDao.updateUserStuffInfo4(user);
-			} catch (WxErrorException e) {
-				logger.error("failed to upload wxPayImg", e);
-			}
+			userDao.updateUserStuffInfo4(user);
+		} catch (WxErrorException e) {
+			logger.error("failed to upload wxPayImg", e);
 		}
 	}
 
@@ -193,36 +197,8 @@ public class UserServiceImpl implements UserService {
 
 	private boolean isStuffComplete(User user) {
 
-		return isStuffInfo1Complete(user) && isStuffInfo2Complete(user)
-				&& isStuffInfo3Complete(user) && isStuffInfo4Complete(user);
-	}
-
-	private boolean isStuffInfo4Complete(User user) {
-		return StringUtils.isNotBlank(user.getWxPayImgUrl());
-	}
-
-	private boolean isStuffInfo3Complete(User user) {
-		return StringUtils.isNotBlank(user.getPhone())
-				&& StringUtils.isNotBlank(user.getPhonePassword())
-				&& StringUtils.isNotBlank(user.getAccountNo());
-	}
-
-	private boolean isStuffInfo2Complete(User user) {
-		return StringUtils.isNotBlank(user.getRelativeName1())
-				&& StringUtils.isNotBlank(user.getRelativeName2())
-				&& StringUtils.isNotBlank(user.getRelativeRelation1())
-				&& StringUtils.isNotBlank(user.getRelativeRelation2())
-				&& StringUtils.isNotBlank(user.getRelativePhone1())
-				&& StringUtils.isNotBlank(user.getRelativePhone2());
-	}
-
-	private boolean isStuffInfo1Complete(User user) {
-		return StringUtils.isNotBlank(user.getRealName())
-				&& StringUtils.isNotBlank(user.getIdBackImgUrl())
-				&& StringUtils.isNotBlank(user.getIdBackImgUrl())
-				&& StringUtils.isNotBlank(user.getPersonIdImgUrl())
-				&& StringUtils.isNotBlank(user.getAddress())
-				&& user.getMaritalStatus() != null && user.getDegree() != null;
+		return user.isStep1Done() && user.isStep2Done()
+				&& user.isStep3Done() && user.isStep4Done();
 	}
 
 	private float generateCreditLine() {

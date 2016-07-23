@@ -10,7 +10,11 @@ package cn.wisdom.test;
 import java.text.NumberFormat;
 import java.util.Locale;
 
-import me.chanjar.weixin.common.util.http.URIUtil;
+import cn.wisdom.common.exception.OVTException;
+import cn.wisdom.common.utils.JsonUtils;
+import cn.wisdom.dao.constant.RoleType;
+import cn.wisdom.dao.constant.UserState;
+import cn.wisdom.dao.vo.User;
 
 
 /**
@@ -166,14 +170,27 @@ public class TestMain
 //			e.printStackTrace();
 //		}
     	
-    	String redirectURI = "http://credit.southwisdom.cn";
-    	String redirectURI2 = "http://credit.southwisdom.cn/user_info.html";
-    	String redirectURI3 = "http://credit.southwisdom.cn/wx_cert.html";
-    	String redirectURI4 = "http://credit.southwisdom.cn/borrow.html";
-		System.out.println(URIUtil.encodeURIComponent(redirectURI));
-		System.out.println(URIUtil.encodeURIComponent(redirectURI2));
-		System.out.println(URIUtil.encodeURIComponent(redirectURI3));
-		System.out.println(URIUtil.encodeURIComponent(redirectURI4));
+//    	String redirectURI = "http://credit.southwisdom.cn";
+//    	String redirectURI2 = "http://credit.southwisdom.cn/user_info.html";
+//    	String redirectURI3 = "http://credit.southwisdom.cn/wx_cert.html";
+//    	String redirectURI4 = "http://credit.southwisdom.cn/borrow.html";
+//		System.out.println(URIUtil.encodeURIComponent(redirectURI));
+//		System.out.println(URIUtil.encodeURIComponent(redirectURI2));
+//		System.out.println(URIUtil.encodeURIComponent(redirectURI3));
+//		System.out.println(URIUtil.encodeURIComponent(redirectURI4));
+    	
+    	User user = new User();
+    
+    	user.setRole(RoleType.CUSTOMER);
+    	user.setUserState(UserState.Approved);
+    	try {
+			String json = JsonUtils.toJson(user);
+			
+			System.out.println(json);
+		} catch (OVTException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
     
     public static String formatNumber(double num,int maxFractionDigits) {

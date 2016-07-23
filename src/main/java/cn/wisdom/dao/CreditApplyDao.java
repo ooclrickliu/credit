@@ -1,5 +1,7 @@
 package cn.wisdom.dao;
 
+import java.util.List;
+
 import cn.wisdom.dao.constant.ApplyState;
 import cn.wisdom.dao.vo.CreditApply;
 
@@ -13,4 +15,6 @@ public interface CreditApplyDao {
 			ApplyState toState);
 
 	CreditApply getApply(long applyId);
+
+	List<CreditApply> getApplyList(long userId);
 }
