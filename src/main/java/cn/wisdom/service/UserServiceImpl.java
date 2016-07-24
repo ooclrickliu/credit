@@ -189,7 +189,9 @@ public class UserServiceImpl implements UserService {
 
 	private void setUserCreditLine(User user) {
 		if (isStuffComplete(user)) {
-			user.setCreditLine(generateCreditLine());
+			if (user.getCreditLine() <= appProperty.defaultCreditLine) {
+				user.setCreditLine(generateCreditLine());
+			}
 
 			user.setUserState(UserState.New);
 		}

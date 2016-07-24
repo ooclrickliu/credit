@@ -2,6 +2,7 @@ package cn.wisdom.service;
 
 import java.io.File;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -22,6 +23,10 @@ import cn.wisdom.dao.constant.ApplyState;
 import cn.wisdom.dao.vo.AppProperty;
 import cn.wisdom.dao.vo.CreditApply;
 import cn.wisdom.dao.vo.CreditPayRecord;
+import cn.wisdom.dao.vo.User;
+import cn.wisdom.service.context.SessionContext;
+import cn.wisdom.service.exception.ServiceErrorCode;
+import cn.wisdom.service.exception.ServiceException;
 import cn.wisdom.service.wx.WXService;
 
 @Service
@@ -46,8 +51,11 @@ public class CreditServiceImpl implements CreditService {
 			.getLogger(CreditServiceImpl.class.getName());
 
 	@Override
-	public CreditApply applyCreditStep1(CreditApply creditApply) {
+	public CreditApply applyCreditStep1(CreditApply creditApply) throws ServiceException {
 
+		// 0. check available credit line
+		checkAvailableCreditLine(creditApply);
+		
 		// 1. calculate fee
 		creditCalculator.calculateFee(creditApply);
 
@@ -64,6 +72,13 @@ public class CreditServiceImpl implements CreditService {
 		return creditApply;
 	}
 
+	private void checkAvailableCreditLine(CreditApply creditApply) throws ServiceException {
+		AccountProfile accountProfile = this.getAccountProfile(creditApply.getUserId());
+		if (accountProfile.getAvailableCreditLine() <= 0) {
+			throw new ServiceException(ServiceErrorCode.NO_AVAILABLE_CREDIT_LINE, "No available credit line.");
+		}
+	}
+
 	private boolean isCreditApplyReady(CreditApply creditApply) {
 
 		return creditApply.getAmount() > 0 && creditApply.getMonth() > 0
@@ -71,23 +86,25 @@ public class CreditServiceImpl implements CreditService {
 	}
 
 	@Override
-	public void applyCreditStep2(CreditApply creditApply) {
+	public void applyCreditStep2(long applyId, String commissionImgUrl) {
 
+		CreditApply creditApply = creditApplyDao.getApply(applyId);
+		
 		try {
-			File commissionImg = wxService.getWxMpService().mediaDownload(
-					creditApply.getCommissionImgUrl());
+			File commissionImg = wxService.getWxMpService().mediaDownload(commissionImgUrl);
 			creditApply.setCommissionImgUrl(commissionImg.getAbsolutePath());
+
+			if (isCreditApplyReady(creditApply)) {
+				creditApply.setApplyState(ApplyState.Approving);
+			} else {
+				creditApply.setApplyState(ApplyState.Applying);
+			}
+
+			creditApplyDao.updateCommissionInfo(creditApply);
 		} catch (WxErrorException e) {
 			logger.error("failed to upload commissionImg", e);
+			creditApply.setCommissionImgUrl(commissionImgUrl);
 		}
-
-		if (isCreditApplyReady(creditApply)) {
-			creditApply.setApplyState(ApplyState.Approving);
-		} else {
-			creditApply.setApplyState(ApplyState.Applying);
-		}
-
-		creditApplyDao.updateCommissionInfo(creditApply);
 	}
 
 	@Override
@@ -99,6 +116,7 @@ public class CreditServiceImpl implements CreditService {
 		Timestamp dueTime = DateTimeUtils.toTimestamp(DateTimeUtils.addMonths(
 				today, apply.getMonth()));
 		apply.setDueTime(dueTime);
+		apply.setApplyState(ApplyState.Approved);
 
 		creditApplyDao.updateApplyApproveInfo(apply);
 	}
@@ -113,51 +131,53 @@ public class CreditServiceImpl implements CreditService {
 
 	@Override
 	public void returnCredit(long applyId, String returnCreditImgUrl) {
-		try {
-			File returnCreditImg = wxService.getWxMpService().mediaDownload(
-					returnCreditImgUrl);
+//		try {
+//			File returnCreditImg = wxService.getWxMpService().mediaDownload(
+//					returnCreditImgUrl);
+//
+//		} catch (WxErrorException e) {
+//			logger.error("failed to upload returnCreditImg", e);
+//		}
 
-			// get last pay record
-			CreditPayRecord lastPayRecord = creditPayDao
-					.getLastPayRecord(applyId);
+		// get last pay record
+		CreditPayRecord lastPayRecord = creditPayDao
+				.getLastPayRecord(applyId);
 
-			// create a new pay record
-			CreditPayRecord newPayRecord = new CreditPayRecord();
-			if (lastPayRecord == null) {
-				CreditApply creditApply = creditApplyDao.getApply(applyId);
+		// create a new pay record
+		CreditPayRecord newPayRecord = new CreditPayRecord();
+		if (lastPayRecord == null) {
+			CreditApply creditApply = creditApplyDao.getApply(applyId);
 
-				newPayRecord.setApplyId(applyId);
-				newPayRecord.setCreditBase(creditApply.getAmount());
-				newPayRecord.setRemainBase(creditApply.getAmount());
-				newPayRecord.setReturnState(ApplyState.Approving);
-				newPayRecord.setReturnTime(DateTimeUtils.getCurrentTimestamp());
-				newPayRecord.setPayImgUrl(returnCreditImg.getAbsolutePath());
+			newPayRecord.setApplyId(applyId);
+			newPayRecord.setCreditBase(creditApply.getAmount());
+			newPayRecord.setRemainBase(creditApply.getAmount());
+			newPayRecord.setReturnState(ApplyState.Approving);
+			newPayRecord.setReturnTime(DateTimeUtils.getCurrentTimestamp());
+			newPayRecord.setPayImgUrl(returnCreditImgUrl);
+//			newPayRecord.setPayImgUrl(returnCreditImg.getAbsolutePath());
 
-				float interest = creditCalculator.calculateInterest(
-						creditApply.getAmount(),
-						creditApply.getEffectiveTime(),
-						appProperty.creditRatePerDay);
-				newPayRecord.setInterest(interest);
-			} else {
-				newPayRecord.setApplyId(applyId);
-				newPayRecord.setCreditBase(lastPayRecord.getRemainBase());
-				newPayRecord.setRemainBase(lastPayRecord.getRemainBase());
-				newPayRecord.setReturnState(ApplyState.Approving);
-				newPayRecord.setReturnTime(DateTimeUtils.getCurrentTimestamp());
-				newPayRecord.setPayImgUrl(returnCreditImg.getAbsolutePath());
+			float interest = creditCalculator.calculateInterest(
+					creditApply.getAmount(),
+					creditApply.getEffectiveTime(),
+					appProperty.creditRatePerDay);
+			newPayRecord.setInterest(interest);
+		} else {
+			newPayRecord.setApplyId(applyId);
+			newPayRecord.setCreditBase(lastPayRecord.getRemainBase());
+			newPayRecord.setRemainBase(lastPayRecord.getRemainBase());
+			newPayRecord.setReturnState(ApplyState.Approving);
+			newPayRecord.setReturnTime(DateTimeUtils.getCurrentTimestamp());
+			newPayRecord.setPayImgUrl(returnCreditImgUrl);
+//			newPayRecord.setPayImgUrl(returnCreditImg.getAbsolutePath());
 
-				float interest = creditCalculator.calculateInterest(
-						lastPayRecord.getRemainBase(),
-						lastPayRecord.getReturnTime(),
-						appProperty.creditRatePerDay);
-				newPayRecord.setInterest(interest);
+			float interest = creditCalculator.calculateInterest(
+					lastPayRecord.getRemainBase(),
+					lastPayRecord.getReturnTime(),
+					appProperty.creditRatePerDay);
+			newPayRecord.setInterest(interest);
 
-			}
-			creditPayDao.save(newPayRecord);
-
-		} catch (WxErrorException e) {
-			logger.error("failed to upload returnCreditImg", e);
 		}
+		creditPayDao.save(newPayRecord);
 
 	}
 
@@ -197,17 +217,70 @@ public class CreditServiceImpl implements CreditService {
 	}
 
 	@Override
-	public List<CreditApply> getApplyList(long userId) {
+	public List<CreditApply> getApplyList(long userId, List<ApplyState> applyStates) {
 
-		List<CreditApply> applyList = creditApplyDao.getApplyList(userId);
+		List<CreditApply> applyList = creditApplyDao.getApplyList(userId, applyStates);
 
 		return applyList;
 	}
 
 	@Override
 	public AccountProfile getAccountProfile(long userId) {
+		
+		AccountProfile accountProfile = new AccountProfile();
+		
+		User user = SessionContext.getCurrentUser();
+		
+		//
+		accountProfile.setRatePerDay(appProperty.creditRatePerDay);
+		accountProfile.setCommissionRate(appProperty.creditCommissionRate);
+		accountProfile.setTotalCreditLine(user.getCreditLine());
+		
+		//
+		List<CreditApply> topayApplyList = this.getTopayApplyList(user.getId());
+		
+		Date today = new Date();
+		accountProfile.setPending7DAmount(this.getPendingAmount(topayApplyList, DateTimeUtils.addDays(today, 7)));
+		accountProfile.setPending30DAmount(this.getPendingAmount(topayApplyList, DateTimeUtils.addDays(today, 30)));
+		accountProfile.setPendingTotalAmount(this.getPendingAmount(topayApplyList, DateTimeUtils.addYears(today, 10)));
 
+		//
+		accountProfile.setAvailableCreditLine(accountProfile.getTotalCreditLine() - accountProfile.getPendingTotalAmount());
+
+		return accountProfile;
+	}
+
+	private float getPendingAmount(List<CreditApply> topayApplyList,
+			Date dueDate) {
+		float pendingAmount = 0f;
+		for (CreditApply creditApply : topayApplyList) {
+			if (creditApply.getDueTime().before(dueDate)) {
+				pendingAmount += (creditApply.getAmount() - creditApply.getReturnedBase());
+			}
+		}
+		
+		return pendingAmount;
+	}
+
+	@Override
+	public List<CreditApply> getOverdueApplyList() {
+		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void updateOverdueApplyState() {
+		creditApplyDao.updateOverdueState();
+	}
+
+	@Override
+	public List<CreditApply> getTopayApplyList(long userId) {
+		List<ApplyState> states = new ArrayList<ApplyState>();
+		states.add(ApplyState.Approved);
+		states.add(ApplyState.Overdue);
+		List<CreditApply> applyList =  this.getApplyList(userId, states);
+		
+		return applyList;
 	}
 
 }

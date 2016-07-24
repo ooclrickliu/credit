@@ -18,7 +18,9 @@ public interface CreditApplyDao {
 
 	CreditApply getApply(long applyId);
 
-	List<CreditApply> getApplyList(long userId);
+	List<CreditApply> getApplyList(long userId, List<ApplyState> applyStates);
 
 	void updateReturnInfo(CreditApply apply);
+
+	void updateOverdueState();
 }

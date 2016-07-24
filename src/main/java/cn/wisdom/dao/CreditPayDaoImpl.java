@@ -66,8 +66,8 @@ public class CreditPayDaoImpl implements CreditPayDao {
 
 		String errMsg = "Failed to update credit pay record state, id: "
 				+ payRecordId;
-		daoHelper.update(SQL_UPDATE_PAY_STATE, errMsg, toState, payRecordId,
-				fromState);
+		daoHelper.update(SQL_UPDATE_PAY_STATE, errMsg, toState.toString(), payRecordId,
+				fromState.toString());
 	}
 
 	@Override
@@ -77,7 +77,7 @@ public class CreditPayDaoImpl implements CreditPayDao {
 				+ payRecord.getId();
 		daoHelper.update(SQL_UPDATE_PAY_INFO, errMsg, payRecord.getReturnedAmount(), payRecord.getRemainBase(),
 				payRecord.getReturnState().toString(), payRecord.getId(),
-				ApplyState.Approving);
+				ApplyState.Approving.toString());
 	}
 
 }

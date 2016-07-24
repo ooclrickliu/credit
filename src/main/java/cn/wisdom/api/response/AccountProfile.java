@@ -19,6 +19,9 @@ public class AccountProfile {
 	
 	// 日利率
 	private float ratePerDay;
+	
+	// 手续费率
+	private float commissionRate;
 
 	public float getPending7DAmount() {
 		return pending7DAmount;
@@ -66,5 +69,13 @@ public class AccountProfile {
 
 	public void setRatePerDay(float ratePerDay) {
 		this.ratePerDay = ratePerDay;
+	}
+
+	public float getCommissionRate() {
+		return commissionRate;
+	}
+
+	public void setCommissionRate(float commissionRate) {
+		this.commissionRate = commissionRate;
 	}
 }

@@ -27,6 +27,9 @@ public class AppProperty
 	@Value("${credit.rate.day}")
 	public float creditRatePerDay;
 	
+	@Value("${credit.commission.rate}")
+	public float creditCommissionRate;
+	
 	@Value("${credit.line.default}")
 	public float defaultCreditLine;
 	

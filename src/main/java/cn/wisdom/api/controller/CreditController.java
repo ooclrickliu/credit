@@ -29,12 +29,12 @@ import cn.wisdom.service.context.SessionContext;
 import cn.wisdom.service.exception.ServiceException;
 
 /**
- * UsersController provides restful APIs of user
+ * CreditController
  * 
  * @Author zhi.liu
  * @Version 1.0
  * @See
- * @Since [OVT Cloud Platform]/[API] 1.0
+ * @Since [Credit]/[API] 1.0
  */
 
 @Controller
@@ -58,7 +58,7 @@ public class CreditController {
 		
 		AccountProfile accountProfile = creditService.getAccountProfile(currentUser.getId());
 
-		return SUCCESS;
+		return new CreditAPIResult(accountProfile);
 	}
 
 	/**
@@ -92,11 +92,8 @@ public class CreditController {
 	public JsonDocument applyCreditStep2(@RequestParam long id,
 			@RequestParam("commissionImgUrl") String commissionImgUrl)
 			throws ServiceException {
-		CreditApply creditApply = new CreditApply();
-		creditApply.setId(id);
-		creditApply.setCommissionImgUrl(commissionImgUrl);
 
-		creditService.applyCreditStep2(creditApply);
+		creditService.applyCreditStep2(id, commissionImgUrl);
 
 		return SUCCESS;
 	}
@@ -131,18 +128,35 @@ public class CreditController {
 	}
 
 	/**
-	 * 查询借款申请
+	 * 我的借款：ApplyState.All
 	 * 
 	 * @return
 	 * @throws ServiceException
 	 */
-	@RequestMapping(method = RequestMethod.GET, value = "/apply/list")
+	@RequestMapping(method = RequestMethod.GET, value = "/apply/list/all")
 	@ResponseBody
 	public JsonDocument listApplyOfUser()
 			throws ServiceException {
 
 		User user = SessionContext.getCurrentUser();
-		List<CreditApply> applyList =  creditService.getApplyList(user.getId());
+		List<CreditApply> applyList =  creditService.getApplyList(user.getId(), null);
+		
+		return new CreditAPIResult(applyList);
+	}
+	
+	/**
+	 * 还款显示的列表：Approved, Overdue
+	 * 
+	 * @return
+	 * @throws ServiceException
+	 */
+	@RequestMapping(method = RequestMethod.GET, value = "/apply/list/topay")
+	@ResponseBody
+	public JsonDocument listTopayApply()
+			throws ServiceException {
+		
+		User user = SessionContext.getCurrentUser();
+		List<CreditApply> applyList =  creditService.getTopayApplyList(user.getId());
 		
 		return new CreditAPIResult(applyList);
 	}

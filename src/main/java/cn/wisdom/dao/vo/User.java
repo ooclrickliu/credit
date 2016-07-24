@@ -7,6 +7,8 @@
  */
 package cn.wisdom.dao.vo;
 
+import java.sql.Timestamp;
+
 import me.chanjar.weixin.mp.bean.result.WxMpUser;
 import cn.wisdom.common.utils.StringUtils;
 import cn.wisdom.dao.annotation.Column;
@@ -106,7 +108,7 @@ public class User extends BaseEntity
 	
 	// other:
 	@Column("approve_time")
-    private String approveTime;
+    private Timestamp approveTime;
 	
 	@Column("approve_note")
 	private String approveNote;
@@ -288,11 +290,11 @@ public class User extends BaseEntity
 		this.wxPayImgUrl = wxPayImgUrl;
 	}
 
-	public String getApproveTime() {
+	public Timestamp getApproveTime() {
 		return approveTime;
 	}
 
-	public void setApproveTime(String approveTime) {
+	public void setApproveTime(Timestamp approveTime) {
 		this.approveTime = approveTime;
 	}
 

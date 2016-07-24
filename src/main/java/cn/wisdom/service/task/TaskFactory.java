@@ -7,6 +7,7 @@
  */
 package cn.wisdom.service.task;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Component;
 
@@ -23,9 +24,9 @@ import org.springframework.stereotype.Component;
 public class TaskFactory
 {
 	
-//    @Bean
-//    public LotteryOpenPrizeTask newLotteryPublishTask()
-//    {
-//        return new LotteryOpenPrizeTask();
-//    }
+	@Bean
+	public CreditTask newCreditTask() 
+	{
+		return new CreditTask();
+	}
 }
