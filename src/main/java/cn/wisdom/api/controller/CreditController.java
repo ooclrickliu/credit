@@ -78,7 +78,7 @@ public class CreditController {
 
 		creditApply = creditService.applyCreditStep1(creditApply);
 
-		return SUCCESS;
+		return new CreditAPIResult(creditApply);
 	}
 
 	/**

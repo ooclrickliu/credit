@@ -29,6 +29,9 @@ public class UserDaoImpl implements UserDao {
 
 	private static final String SQL_GET_USER_PREFIX = "select * from user ";
 
+	private static final String SQL_GET_USER_BY_ID = SQL_GET_USER_PREFIX
+			+ "where id = ?";
+	
 	private static final String SQL_GET_USER_BY_OPENDID = SQL_GET_USER_PREFIX
 			+ "where openid = ?";
 
@@ -62,6 +65,16 @@ public class UserDaoImpl implements UserDao {
 		String errMsg = "Failed to get user by openid: " + openId;
 		User user = daoHelper.queryForObject(SQL_GET_USER_BY_OPENDID,
 				userMapper, errMsg, openId);
+
+		return user;
+	}
+
+	@Override
+	public User getUserById(long userId) {
+
+		String errMsg = "Failed to get user by id: " + userId;
+		User user = daoHelper.queryForObject(SQL_GET_USER_BY_ID,
+				userMapper, errMsg, userId);
 
 		return user;
 	}

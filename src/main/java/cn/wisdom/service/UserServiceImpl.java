@@ -89,8 +89,6 @@ public class UserServiceImpl implements UserService {
 		try {
 			WxMpOAuth2AccessToken oauth2getAccessToken = wxService.getWxMpService().oauth2getAccessToken(oauthCode);
 			
-			System.out.println("----------oauth:" + oauth2getAccessToken);
-			
 //			WxMpUser wxMpUser = wxService.getWxMpService().oauth2getUserInfo(oauth2getAccessToken, null);
 			WxMpUser wxMpUser = wxService.getWxMpService().userInfo(oauth2getAccessToken.getOpenId(), null);
 			
@@ -107,6 +105,11 @@ public class UserServiceImpl implements UserService {
 			logger.error(errMsg, e);
 		}
 		return user;
+	}
+
+	@Override
+	public User getUserById(long userId) {
+		return userDao.getUserById(userId);
 	}
 
 	@Override

@@ -7,8 +7,14 @@
  */
 package cn.wisdom.dao.vo;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import cn.wisdom.common.utils.CollectionUtils;
+import cn.wisdom.common.utils.StringUtils;
 
 /**
  * AppProperty
@@ -38,4 +44,23 @@ public class AppProperty
 	
 	@Value("${credit.line.max}")
 	public float maxCreditLine;
+	
+	@Value("${user.openid.boss}")
+	public String bossOpenids;
+	
+	private List<String> bossOpenidList;
+
+	public List<String> getBossOpenidList() {
+		if (CollectionUtils.isEmpty(bossOpenidList)) {
+			bossOpenidList = new ArrayList<String>();
+			
+			if (StringUtils.isNotBlank(bossOpenids)) {
+				String[] bossOpenidArr = bossOpenids.split(",|;");
+				for (String bossOpenid : bossOpenidArr) {
+					bossOpenidList.add(bossOpenid);
+				}
+			}
+		}
+		return bossOpenidList;
+	}
 }

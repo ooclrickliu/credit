@@ -13,6 +13,8 @@ public interface UserDao {
 
 	User getUserByOpenid(String openId);
 
+	User getUserById(long userId);
+
 	void updateUserStuffInfo1(User user);
 
 	void updateUserStuffInfo2(User user);

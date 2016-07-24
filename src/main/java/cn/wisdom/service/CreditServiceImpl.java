@@ -27,6 +27,7 @@ import cn.wisdom.dao.vo.User;
 import cn.wisdom.service.context.SessionContext;
 import cn.wisdom.service.exception.ServiceErrorCode;
 import cn.wisdom.service.exception.ServiceException;
+import cn.wisdom.service.wx.MessageNotifier;
 import cn.wisdom.service.wx.WXService;
 
 @Service
@@ -43,6 +44,9 @@ public class CreditServiceImpl implements CreditService {
 
 	@Autowired
 	private WXService wxService;
+	
+	@Autowired
+	private MessageNotifier messageNotifier;
 
 	@Autowired
 	private AppProperty appProperty;
@@ -96,6 +100,8 @@ public class CreditServiceImpl implements CreditService {
 
 			if (isCreditApplyReady(creditApply)) {
 				creditApply.setApplyState(ApplyState.Approving);
+				
+				messageNotifier.notifyBossNewApply(creditApply);
 			} else {
 				creditApply.setApplyState(ApplyState.Applying);
 			}
@@ -108,9 +114,11 @@ public class CreditServiceImpl implements CreditService {
 	}
 
 	@Override
-	public void approve(long applyId) {
+	public void approve(long applyId) throws ServiceException {
 
 		CreditApply apply = creditApplyDao.getApply(applyId);
+		
+		checkAvailableCreditLine(apply);
 
 		Date today = new Date();
 		Timestamp dueTime = DateTimeUtils.toTimestamp(DateTimeUtils.addMonths(
@@ -119,6 +127,12 @@ public class CreditServiceImpl implements CreditService {
 		apply.setApplyState(ApplyState.Approved);
 
 		creditApplyDao.updateApplyApproveInfo(apply);
+		
+		try {
+			messageNotifier.notifyUserApplyApproved(apply);
+		} catch (WxErrorException e) {
+			logger.error("failed to notify user apply approved.", e);
+		}
 	}
 
 	@Override
@@ -131,54 +145,50 @@ public class CreditServiceImpl implements CreditService {
 
 	@Override
 	public void returnCredit(long applyId, String returnCreditImgUrl) {
-//		try {
-//			File returnCreditImg = wxService.getWxMpService().mediaDownload(
-//					returnCreditImgUrl);
-//
-//		} catch (WxErrorException e) {
-//			logger.error("failed to upload returnCreditImg", e);
-//		}
+		try {
+			File returnCreditImg = wxService.getWxMpService().mediaDownload(
+					returnCreditImgUrl);
 
-		// get last pay record
-		CreditPayRecord lastPayRecord = creditPayDao
-				.getLastPayRecord(applyId);
+			// get last pay record
+			CreditPayRecord lastPayRecord = creditPayDao
+					.getLastPayRecord(applyId);
 
-		// create a new pay record
-		CreditPayRecord newPayRecord = new CreditPayRecord();
-		if (lastPayRecord == null) {
-			CreditApply creditApply = creditApplyDao.getApply(applyId);
+			// create a new pay record
+			CreditPayRecord newPayRecord = new CreditPayRecord();
+			if (lastPayRecord == null) {
+				CreditApply creditApply = creditApplyDao.getApply(applyId);
 
-			newPayRecord.setApplyId(applyId);
-			newPayRecord.setCreditBase(creditApply.getAmount());
-			newPayRecord.setRemainBase(creditApply.getAmount());
-			newPayRecord.setReturnState(ApplyState.Approving);
-			newPayRecord.setReturnTime(DateTimeUtils.getCurrentTimestamp());
-			newPayRecord.setPayImgUrl(returnCreditImgUrl);
-//			newPayRecord.setPayImgUrl(returnCreditImg.getAbsolutePath());
+				newPayRecord.setApplyId(applyId);
+				newPayRecord.setCreditBase(creditApply.getAmount());
+				newPayRecord.setRemainBase(creditApply.getAmount());
+				newPayRecord.setReturnState(ApplyState.Approving);
+				newPayRecord.setReturnTime(DateTimeUtils.getCurrentTimestamp());
+				newPayRecord.setPayImgUrl(returnCreditImg.getAbsolutePath());
 
-			float interest = creditCalculator.calculateInterest(
-					creditApply.getAmount(),
-					creditApply.getEffectiveTime(),
-					appProperty.creditRatePerDay);
-			newPayRecord.setInterest(interest);
-		} else {
-			newPayRecord.setApplyId(applyId);
-			newPayRecord.setCreditBase(lastPayRecord.getRemainBase());
-			newPayRecord.setRemainBase(lastPayRecord.getRemainBase());
-			newPayRecord.setReturnState(ApplyState.Approving);
-			newPayRecord.setReturnTime(DateTimeUtils.getCurrentTimestamp());
-			newPayRecord.setPayImgUrl(returnCreditImgUrl);
-//			newPayRecord.setPayImgUrl(returnCreditImg.getAbsolutePath());
+				float interest = creditCalculator.calculateInterest(
+						creditApply.getAmount(),
+						creditApply.getEffectiveTime(),
+						appProperty.creditRatePerDay);
+				newPayRecord.setInterest(interest);
+			} else {
+				newPayRecord.setApplyId(applyId);
+				newPayRecord.setCreditBase(lastPayRecord.getRemainBase());
+				newPayRecord.setRemainBase(lastPayRecord.getRemainBase());
+				newPayRecord.setReturnState(ApplyState.Approving);
+				newPayRecord.setReturnTime(DateTimeUtils.getCurrentTimestamp());
+				newPayRecord.setPayImgUrl(returnCreditImg.getAbsolutePath());
 
-			float interest = creditCalculator.calculateInterest(
-					lastPayRecord.getRemainBase(),
-					lastPayRecord.getReturnTime(),
-					appProperty.creditRatePerDay);
-			newPayRecord.setInterest(interest);
+				float interest = creditCalculator.calculateInterest(
+						lastPayRecord.getRemainBase(),
+						lastPayRecord.getReturnTime(),
+						appProperty.creditRatePerDay);
+				newPayRecord.setInterest(interest);
 
+			}
+			creditPayDao.save(newPayRecord);
+		} catch (WxErrorException e) {
+			logger.error("failed to upload returnCreditImg", e);
 		}
-		creditPayDao.save(newPayRecord);
-
 	}
 
 	@Override

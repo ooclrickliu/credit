@@ -57,6 +57,14 @@ public interface UserService
 	 * @return
 	 */
 	User getUserByOauthCode(String oauthCode);
+
+	/**
+	 * 通过ID获取用户信息
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	User getUserById(long userId);
 	
 	/////////////////////////////////////////////
 

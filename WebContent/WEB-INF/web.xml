@@ -3,11 +3,11 @@
 	xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
 	version="3.0">
-	<display-name>LotteryService</display-name>
+	<display-name>Credit</display-name>
 	
 	<context-param>
 		<param-name>webAppRootKey</param-name>
-		<param-value>web.lottery.root</param-value>
+		<param-value>web.credit.root</param-value>
 	</context-param>
 	
 	<listener>
@@ -30,7 +30,7 @@
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 	<servlet>
-		<servlet-name>LotteryService</servlet-name>
+		<servlet-name>Credit</servlet-name>
 		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
 		<init-param>
 			<param-name>contextConfigLocation</param-name>
@@ -39,7 +39,7 @@
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>LotteryService</servlet-name>
+		<servlet-name>Credit</servlet-name>
 		<url-pattern>/api/*</url-pattern>
 	</servlet-mapping>
 </web-app>

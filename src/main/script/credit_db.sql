@@ -42,3 +42,50 @@ CREATE TABLE IF NOT EXISTS `user` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `openid` (`openid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+
+--
+-- 表的结构 `credit_apply`
+--
+
+CREATE TABLE IF NOT EXISTS `credit_apply` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `user_id` bigint(20) NOT NULL,
+  `amount` float DEFAULT NULL,
+  `returned_base` float DEFAULT NULL,
+  `month` int(11) DEFAULT NULL,
+  `interest` float DEFAULT NULL,
+  `commission` float DEFAULT NULL,
+  `commission_img_url` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `apply_state` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `apply_time` timestamp NULL DEFAULT NULL,
+  `approve_time` timestamp NULL DEFAULT NULL,
+  `approve_note` varchar(200) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `effective_time` timestamp NULL DEFAULT NULL,
+  `due_time` timestamp NULL DEFAULT NULL,
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_time` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=3 ;
+
+
+--
+-- 表的结构 `credit_pay_record`
+--
+
+CREATE TABLE IF NOT EXISTS `credit_pay_record` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `apply_id` bigint(20) NOT NULL,
+  `credit_base` float DEFAULT NULL,
+  `credit_interest` float DEFAULT NULL,
+  `returned_amount` float DEFAULT NULL,
+  `remain_base` float DEFAULT NULL,
+  `return_state` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `pay_img_url` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `return_time` timestamp NULL DEFAULT NULL,
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_time` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `apply_id` (`apply_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=6 ;

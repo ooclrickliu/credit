@@ -13,7 +13,7 @@ public interface CreditService {
 
 	void applyCreditStep2(long applyId, String commissionImgUrl);
 
-	void approve(long applyId);
+	void approve(long applyId) throws ServiceException;
 
 	void reject(long applyId, String note);
 

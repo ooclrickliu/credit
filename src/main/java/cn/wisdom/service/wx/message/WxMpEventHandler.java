@@ -61,7 +61,7 @@ public class WxMpEventHandler implements WxMpMessageHandler {
 		// 点击菜单
 		else if (StringUtils.equalsIgnoreCase(wxMessage.getEvent(),
 				WxConsts.EVT_CLICK)) {
-			response = handleMenuClick(wxMessage);
+//			response = handleMenuClick(wxMessage);
 		}
 
 		return response;
@@ -87,9 +87,6 @@ public class WxMpEventHandler implements WxMpMessageHandler {
 	private WxMpXmlOutMessage handleSubscribe(WxMpXmlMessage wxMessage) {
 		// 保存用户
 		try {
-			System.out.println("========" + userService == null);
-			System.out.println("========" + wxMessage.getFromUserName());
-			
 			userService.createUser(wxMessage.getFromUserName(), RoleType.CUSTOMER);
 		} catch (ServiceException e) {
 			logger.error("failed handle subscribe event.", e);

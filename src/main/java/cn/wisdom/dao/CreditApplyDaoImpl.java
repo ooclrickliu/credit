@@ -44,11 +44,12 @@ public class CreditApplyDaoImpl implements CreditApplyDao {
 	public void saveCreditApply(CreditApply creditApply) {
 		String errMsg = "Failed to save new credit appy, userId: "
 				+ creditApply.getUserId();
-		daoHelper.save(SQL_SAVE_CREDIT_APPLY, errMsg, false,
+		long id = daoHelper.save(SQL_SAVE_CREDIT_APPLY, errMsg, true,
 				creditApply.getUserId(), creditApply.getAmount(), creditApply.getMonth(),
 				creditApply.getInterest(), creditApply.getCommission(),
 				creditApply.getApplyState().toString(),
 				creditApply.getApplyTime());
+		creditApply.setId(id);
 	}
 
 	@Override
