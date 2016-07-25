@@ -1,5 +1,7 @@
 package cn.wisdom.dao;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -91,7 +93,7 @@ public class CreditApplyDaoImpl implements CreditApplyDao {
 	}
 
 	@Override
-	public List<CreditApply> getApplyList(long userId, List<ApplyState> applyStates) {
+	public List<CreditApply> getApplyList(long userId, List<ApplyState> applyStates, Date toDate) {
 
 		String errMsg = "Failed to get credit apply of user: " + userId;
 		
@@ -101,8 +103,18 @@ public class CreditApplyDaoImpl implements CreditApplyDao {
 			sql += stateSql;
 		}
 		
+		List<Object> args = new ArrayList<Object>();
+		args.add(userId);
+		
+		if (toDate != null) {
+			String toDateSql = " and due_time <= ?";
+			sql += toDateSql;
+			
+			args.add(toDate);
+		}
+		
 		List<CreditApply> creditApplies = daoHelper.queryForList(
-				sql, creditApplyMapper, errMsg, userId);
+				sql, creditApplyMapper, errMsg, args.toArray(new Object[0]));
 
 		return creditApplies;
 	}

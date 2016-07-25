@@ -23,6 +23,7 @@ import cn.wisdom.api.response.AccountProfile;
 import cn.wisdom.api.response.CreditAPIResult;
 import cn.wisdom.common.model.JsonDocument;
 import cn.wisdom.dao.vo.CreditApply;
+import cn.wisdom.dao.vo.DateRange;
 import cn.wisdom.dao.vo.User;
 import cn.wisdom.service.CreditService;
 import cn.wisdom.service.context.SessionContext;
@@ -139,7 +140,7 @@ public class CreditController {
 			throws ServiceException {
 
 		User user = SessionContext.getCurrentUser();
-		List<CreditApply> applyList =  creditService.getApplyList(user.getId(), null);
+		List<CreditApply> applyList =  creditService.getApplyList(user.getId(), null, null);
 		
 		return new CreditAPIResult(applyList);
 	}
@@ -152,11 +153,11 @@ public class CreditController {
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/apply/list/topay")
 	@ResponseBody
-	public JsonDocument listTopayApply()
+	public JsonDocument listTopayApply(@RequestParam String dateRange)
 			throws ServiceException {
 		
 		User user = SessionContext.getCurrentUser();
-		List<CreditApply> applyList =  creditService.getTopayApplyList(user.getId());
+		List<CreditApply> applyList =  creditService.getTopayApplyList(user.getId(), DateRange.valueOf(dateRange));
 		
 		return new CreditAPIResult(applyList);
 	}

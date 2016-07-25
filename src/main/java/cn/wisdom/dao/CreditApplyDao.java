@@ -1,5 +1,6 @@
 package cn.wisdom.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import cn.wisdom.dao.constant.ApplyState;
@@ -18,7 +19,7 @@ public interface CreditApplyDao {
 
 	CreditApply getApply(long applyId);
 
-	List<CreditApply> getApplyList(long userId, List<ApplyState> applyStates);
+	List<CreditApply> getApplyList(long userId, List<ApplyState> applyStates, Date toDate);
 
 	void updateReturnInfo(CreditApply apply);
 

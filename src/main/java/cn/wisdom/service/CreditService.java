@@ -1,10 +1,12 @@
 package cn.wisdom.service;
 
+import java.util.Date;
 import java.util.List;
 
 import cn.wisdom.api.response.AccountProfile;
 import cn.wisdom.dao.constant.ApplyState;
 import cn.wisdom.dao.vo.CreditApply;
+import cn.wisdom.dao.vo.DateRange;
 import cn.wisdom.service.exception.ServiceException;
 
 public interface CreditService {
@@ -23,9 +25,11 @@ public interface CreditService {
 
 	void returnFail(long payRecordId);
 
-	List<CreditApply> getApplyList(long userId, List<ApplyState> states);
+	List<CreditApply> getApplyList(long userId);
 	
-	List<CreditApply> getTopayApplyList(long userId);
+	List<CreditApply> getApplyList(long userId, List<ApplyState> states, Date toDate);
+	
+	List<CreditApply> getTopayApplyList(long userId, DateRange dateRange);
 
 	AccountProfile getAccountProfile(long userId);
 

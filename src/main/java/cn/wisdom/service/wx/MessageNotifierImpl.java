@@ -9,8 +9,10 @@ import me.chanjar.weixin.mp.bean.WxMpCustomMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import cn.wisdom.common.utils.DateTimeUtils;
 import cn.wisdom.dao.vo.AppProperty;
 import cn.wisdom.dao.vo.CreditApply;
+import cn.wisdom.dao.vo.CreditPayRecord;
 import cn.wisdom.dao.vo.User;
 import cn.wisdom.service.UserService;
 
@@ -26,6 +28,13 @@ public class MessageNotifierImpl implements MessageNotifier {
 	@Autowired
 	private AppProperty appProperty;
 
+	private void sendTextMessage(String content, String openid)
+			throws WxErrorException {
+		WxMpCustomMessage message = WxMpCustomMessage.TEXT()
+				.content(content).toUser(openid).build();
+		wxService.getWxMpService().customMessageSend(message);
+	}
+
 	@Override
 	public void notifyBossNewApply(CreditApply creditApply)
 			throws WxErrorException {
@@ -35,9 +44,7 @@ public class MessageNotifierImpl implements MessageNotifier {
 
 		List<String> bossOpenidList = appProperty.getBossOpenidList();
 		for (String bossOpenid : bossOpenidList) {
-			WxMpCustomMessage message = WxMpCustomMessage.TEXT()
-					.content(content).toUser(bossOpenid).build();
-			wxService.getWxMpService().customMessageSend(message);
+			sendTextMessage(content, bossOpenid);
 		}
 	}
 
@@ -48,10 +55,40 @@ public class MessageNotifierImpl implements MessageNotifier {
 
 		User user = userService.getUserById(creditApply.getUserId());
 		
-		WxMpCustomMessage message = WxMpCustomMessage.TEXT()
-				.content(content).toUser(user.getOpenid()).build();
-		wxService.getWxMpService().customMessageSend(message);
+		sendTextMessage(content, user.getOpenid());
+	}
 
+	@Override
+	public void notifyReturnSuccess(CreditApply apply, CreditPayRecord payRecord) throws WxErrorException {
+		
+		String content = "";
+		
+		if (apply.getRemainBase() > 0) {
+			content = MessageFormat.format("还款成功！\n\n您借款总额: {0}元 \n应还本金: {1}元 \n利息: {2}元 \n本次还款: {3}元 \n剩余应还本金: {4}元 \n还款时间: {5}",
+					apply.getAmount(), payRecord.getCreditBase(), payRecord.getInterest(), 
+					payRecord.getReturnedAmount(), apply.getRemainBase(), 
+					DateTimeUtils.formatSqlDateTime(payRecord.getReturnTime()));
+		}
+		else {
+			content = MessageFormat.format("还款成功！\n\n您借款总额: {0}元 \n应还本金: {1}元 \n利息: {2}元 \n本次还款: {3}元 \n还款时间: {4} \n\n本单借款已还清!",
+					apply.getAmount(), payRecord.getCreditBase(), payRecord.getInterest(), payRecord.getReturnedAmount(),
+					DateTimeUtils.formatSqlDateTime(payRecord.getReturnTime()));
+		}
+
+		User user = userService.getUserById(apply.getUserId());
+		
+		sendTextMessage(content, user.getOpenid());
+	}
+
+	@Override
+	public void notifyReturnFailed(CreditApply apply, CreditPayRecord payRecord)
+			throws WxErrorException {
+		String content = MessageFormat.format("还款失败! \n您于{0} 还款{1}元未成功。",
+				DateTimeUtils.formatSqlDateTime(payRecord.getReturnTime()), payRecord.getReturnedAmount());
+
+		User user = userService.getUserById(apply.getUserId());
+		
+		sendTextMessage(content, user.getOpenid());
 	}
 
 }

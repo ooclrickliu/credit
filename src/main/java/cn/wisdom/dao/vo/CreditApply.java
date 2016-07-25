@@ -47,6 +47,11 @@ public class CreditApply extends BaseEntity {
 	
 	@Column("due_time")
 	private Timestamp dueTime;
+	
+	public float getRemainBase()
+	{
+		return amount - returnedBase;
+	}
 
 	public long getUserId() {
 		return userId;

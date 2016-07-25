@@ -23,6 +23,7 @@ import cn.wisdom.dao.constant.ApplyState;
 import cn.wisdom.dao.vo.AppProperty;
 import cn.wisdom.dao.vo.CreditApply;
 import cn.wisdom.dao.vo.CreditPayRecord;
+import cn.wisdom.dao.vo.DateRange;
 import cn.wisdom.dao.vo.User;
 import cn.wisdom.service.context.SessionContext;
 import cn.wisdom.service.exception.ServiceErrorCode;
@@ -44,7 +45,7 @@ public class CreditServiceImpl implements CreditService {
 
 	@Autowired
 	private WXService wxService;
-	
+
 	@Autowired
 	private MessageNotifier messageNotifier;
 
@@ -55,11 +56,12 @@ public class CreditServiceImpl implements CreditService {
 			.getLogger(CreditServiceImpl.class.getName());
 
 	@Override
-	public CreditApply applyCreditStep1(CreditApply creditApply) throws ServiceException {
+	public CreditApply applyCreditStep1(CreditApply creditApply)
+			throws ServiceException {
 
 		// 0. check available credit line
 		checkAvailableCreditLine(creditApply);
-		
+
 		// 1. calculate fee
 		creditCalculator.calculateFee(creditApply);
 
@@ -76,10 +78,14 @@ public class CreditServiceImpl implements CreditService {
 		return creditApply;
 	}
 
-	private void checkAvailableCreditLine(CreditApply creditApply) throws ServiceException {
-		AccountProfile accountProfile = this.getAccountProfile(creditApply.getUserId());
+	private void checkAvailableCreditLine(CreditApply creditApply)
+			throws ServiceException {
+		AccountProfile accountProfile = this.getAccountProfile(creditApply
+				.getUserId());
 		if (accountProfile.getAvailableCreditLine() <= 0) {
-			throw new ServiceException(ServiceErrorCode.NO_AVAILABLE_CREDIT_LINE, "No available credit line.");
+			throw new ServiceException(
+					ServiceErrorCode.NO_AVAILABLE_CREDIT_LINE,
+					"No available credit line.");
 		}
 	}
 
@@ -93,14 +99,15 @@ public class CreditServiceImpl implements CreditService {
 	public void applyCreditStep2(long applyId, String commissionImgUrl) {
 
 		CreditApply creditApply = creditApplyDao.getApply(applyId);
-		
+
 		try {
-			File commissionImg = wxService.getWxMpService().mediaDownload(commissionImgUrl);
+			File commissionImg = wxService.getWxMpService().mediaDownload(
+					commissionImgUrl);
 			creditApply.setCommissionImgUrl(commissionImg.getAbsolutePath());
 
 			if (isCreditApplyReady(creditApply)) {
 				creditApply.setApplyState(ApplyState.Approving);
-				
+
 				messageNotifier.notifyBossNewApply(creditApply);
 			} else {
 				creditApply.setApplyState(ApplyState.Applying);
@@ -117,7 +124,7 @@ public class CreditServiceImpl implements CreditService {
 	public void approve(long applyId) throws ServiceException {
 
 		CreditApply apply = creditApplyDao.getApply(applyId);
-		
+
 		checkAvailableCreditLine(apply);
 
 		Date today = new Date();
@@ -127,7 +134,7 @@ public class CreditServiceImpl implements CreditService {
 		apply.setApplyState(ApplyState.Approved);
 
 		creditApplyDao.updateApplyApproveInfo(apply);
-		
+
 		try {
 			messageNotifier.notifyUserApplyApproved(apply);
 		} catch (WxErrorException e) {
@@ -217,6 +224,12 @@ public class CreditServiceImpl implements CreditService {
 			apply.setApplyState(ApplyState.ReturnDone);
 		}
 		creditApplyDao.updateReturnInfo(apply);
+		
+		try {
+			messageNotifier.notifyReturnSuccess(apply, payRecord);
+		} catch (WxErrorException e) {
+			logger.error("failed to notify user return success!", e);
+		}
 	}
 
 	@Override
@@ -224,38 +237,72 @@ public class CreditServiceImpl implements CreditService {
 
 		creditPayDao.updatePayRecordState(payRecordId, ApplyState.Approving,
 				ApplyState.ApproveFailed);
+		
+		CreditPayRecord payRecord = creditPayDao.getPayRecord(payRecordId);
+		CreditApply apply = creditApplyDao.getApply(payRecord.getApplyId());
+		
+		try {
+			messageNotifier.notifyReturnFailed(apply, payRecord);
+		} catch (WxErrorException e) {
+			logger.error("failed to notify user return fail!", e);
+		}
 	}
 
 	@Override
-	public List<CreditApply> getApplyList(long userId, List<ApplyState> applyStates) {
+	public List<CreditApply> getApplyList(long userId) {
 
-		List<CreditApply> applyList = creditApplyDao.getApplyList(userId, applyStates);
+		return getApplyList(userId, null, null);
+	}
+
+	@Override
+	public List<CreditApply> getApplyList(long userId,
+			List<ApplyState> applyStates, Date toDate) {
+
+		List<CreditApply> applyList = creditApplyDao.getApplyList(userId,
+				applyStates, toDate);
+
+		for (CreditApply creditApply : applyList) {
+			if (creditApply.getApplyState() == ApplyState.Approved
+					|| creditApply.getApplyState() == ApplyState.Overdue) {
+				float interest = creditCalculator
+						.calculateInterest(creditApply.getAmount()
+								- creditApply.getReturnedBase(),
+								creditApply.getEffectiveTime(),
+								appProperty.creditRatePerDay);
+				creditApply.setInterest(interest);
+			}
+		}
 
 		return applyList;
 	}
 
 	@Override
 	public AccountProfile getAccountProfile(long userId) {
-		
+
 		AccountProfile accountProfile = new AccountProfile();
-		
+
 		User user = SessionContext.getCurrentUser();
-		
+
 		//
 		accountProfile.setRatePerDay(appProperty.creditRatePerDay);
 		accountProfile.setCommissionRate(appProperty.creditCommissionRate);
 		accountProfile.setTotalCreditLine(user.getCreditLine());
-		
-		//
-		List<CreditApply> topayApplyList = this.getTopayApplyList(user.getId());
-		
-		Date today = new Date();
-		accountProfile.setPending7DAmount(this.getPendingAmount(topayApplyList, DateTimeUtils.addDays(today, 7)));
-		accountProfile.setPending30DAmount(this.getPendingAmount(topayApplyList, DateTimeUtils.addDays(today, 30)));
-		accountProfile.setPendingTotalAmount(this.getPendingAmount(topayApplyList, DateTimeUtils.addYears(today, 10)));
 
 		//
-		accountProfile.setAvailableCreditLine(accountProfile.getTotalCreditLine() - accountProfile.getPendingTotalAmount());
+		List<CreditApply> topayApplyList = this.getTopayApplyList(user.getId(),
+				DateRange.All);
+
+		Date today = new Date();
+		accountProfile.setPending7DAmount(this.getPendingAmount(topayApplyList,
+				DateTimeUtils.addDays(today, 7)));
+		accountProfile.setPending30DAmount(this.getPendingAmount(
+				topayApplyList, DateTimeUtils.addDays(today, 30)));
+		accountProfile.setPendingTotalAmount(this.getPendingAmount(
+				topayApplyList, DateTimeUtils.addYears(today, 10)));
+
+		//
+		accountProfile.setAvailableCreditLine(accountProfile
+				.getTotalCreditLine() - accountProfile.getPendingTotalAmount());
 
 		return accountProfile;
 	}
@@ -265,10 +312,11 @@ public class CreditServiceImpl implements CreditService {
 		float pendingAmount = 0f;
 		for (CreditApply creditApply : topayApplyList) {
 			if (creditApply.getDueTime().before(dueDate)) {
-				pendingAmount += (creditApply.getAmount() - creditApply.getReturnedBase());
+				pendingAmount += (creditApply.getAmount() - creditApply
+						.getReturnedBase());
 			}
 		}
-		
+
 		return pendingAmount;
 	}
 
@@ -284,12 +332,13 @@ public class CreditServiceImpl implements CreditService {
 	}
 
 	@Override
-	public List<CreditApply> getTopayApplyList(long userId) {
+	public List<CreditApply> getTopayApplyList(long userId, DateRange dateRange) {
 		List<ApplyState> states = new ArrayList<ApplyState>();
 		states.add(ApplyState.Approved);
 		states.add(ApplyState.Overdue);
-		List<CreditApply> applyList =  this.getApplyList(userId, states);
-		
+		List<CreditApply> applyList = this.getApplyList(userId, states,
+				dateRange.exactTime());
+
 		return applyList;
 	}
 
