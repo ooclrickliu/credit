@@ -24,7 +24,7 @@ public class WxMpLogHandler implements WxMpMessageHandler {
 			WxSessionManager sessionManager) throws WxErrorException {
 		logger.info("From: " + wxMessage.getFromUserName() + " \n Message: " + wxMessage.getContent());
 		
-		return null;
+		return WxMpEventHandler.success;
 	}
 
 }

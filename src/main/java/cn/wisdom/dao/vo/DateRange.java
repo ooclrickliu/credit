@@ -6,7 +6,7 @@ import cn.wisdom.common.utils.DateTimeUtils;
 
 public enum DateRange {
 
-	Day5(5), Day30(30), All(99999);
+	Day7(7), Day30(30), All(99999);
 	
 	private int value;
 	
@@ -21,11 +21,11 @@ public enum DateRange {
 	}
 	
 	public static void main(String[] args) {
-		System.out.println(Day5.exactTime());
+		System.out.println(Day7.exactTime());
 		System.out.println(Day30.exactTime());
 		System.out.println(All.exactTime());
 		
-		System.out.println(DateRange.valueOf("Day5"));
+		System.out.println(DateRange.valueOf("Day7"));
 		System.out.println(DateRange.valueOf("Day30"));
 		System.out.println(DateRange.valueOf("All"));
 	}

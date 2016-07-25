@@ -30,6 +30,7 @@
 		<mvc:interceptor>
 			<mvc:mapping path="/*/**" />
 			<mvc:exclude-mapping path="/users/list" />
+			<mvc:exclude-mapping path="/wx/*" />
 			<bean class="cn.wisdom.api.interceptor.PlatformAccessInterceptor" />
 		</mvc:interceptor>
 	</mvc:interceptors>

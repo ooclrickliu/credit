@@ -82,7 +82,8 @@ public class CreditServiceImpl implements CreditService {
 			throws ServiceException {
 		AccountProfile accountProfile = this.getAccountProfile(creditApply
 				.getUserId());
-		if (accountProfile.getAvailableCreditLine() <= 0) {
+		if (accountProfile.getAvailableCreditLine() <= 0 || 
+				creditApply.getAmount() > accountProfile.getAvailableCreditLine()) {
 			throw new ServiceException(
 					ServiceErrorCode.NO_AVAILABLE_CREDIT_LINE,
 					"No available credit line.");

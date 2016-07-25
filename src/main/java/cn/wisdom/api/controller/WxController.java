@@ -77,8 +77,10 @@ public class WxController {
 			
 			WxMpXmlOutMessage outMessage = wxService.getWxMpMessageRouter()
 					.route(inMessage);
-			response.getWriter().write(
-					outMessage.toEncryptedXml(wxService.getWxConfig()));
+			if (outMessage != null) {
+				response.getWriter().write(
+						outMessage.toEncryptedXml(wxService.getWxConfig()));
+			}
 			return;
 		}
 

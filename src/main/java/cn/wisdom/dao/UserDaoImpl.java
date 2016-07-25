@@ -19,13 +19,13 @@ public class UserDaoImpl implements UserDao {
 
 	private static final String SQL_UPDATE_USER_WX_INFO = "update user set nick_name = ?, head_img_url = ?, update_time = current_timestamp where openid = ?";
 
-	private static final String SQL_UPDATE_USER_STUFF_INFO1 = "update user set real_name = ?, id_face_img_url = ?, id_back_img_url = ?, person_id_img_url = ?, address = ?, marital_status = ?, degree = ?, update_time = current_timestamp where openid = ?";
+	private static final String SQL_UPDATE_USER_STUFF_INFO1 = "update user set real_name = ?, id_face_img_url = ?, id_back_img_url = ?, person_id_img_url = ?, address = ?, marital_status = ?, degree = ?, credit_line = ?, update_time = current_timestamp where openid = ?";
 
-	private static final String SQL_UPDATE_USER_STUFF_INFO2 = "update user set relative_name1 = ?, relative_relation1 = ?, relative_phone1 = ?, relative_name2 = ?, relative_relation2 = ?, relative_phone2 = ?, update_time = current_timestamp where openid = ?";
+	private static final String SQL_UPDATE_USER_STUFF_INFO2 = "update user set relative_name1 = ?, relative_relation1 = ?, relative_phone1 = ?, relative_name2 = ?, relative_relation2 = ?, relative_phone2 = ?, credit_line = ?, update_time = current_timestamp where openid = ?";
 
-	private static final String SQL_UPDATE_USER_STUFF_INFO3 = "update user set phone = ?, phone_password = ?, account_no = ?, update_time = current_timestamp where openid = ?";
+	private static final String SQL_UPDATE_USER_STUFF_INFO3 = "update user set phone = ?, phone_password = ?, account_no = ?, credit_line = ?, update_time = current_timestamp where openid = ?";
 
-	private static final String SQL_UPDATE_USER_STUFF_INFO4 = "update user set wx_pay_img_url = ?, update_time = current_timestamp where openid = ?";
+	private static final String SQL_UPDATE_USER_STUFF_INFO4 = "update user set wx_pay_img_url = ?, credit_line = ?, update_time = current_timestamp where openid = ?";
 
 	private static final String SQL_GET_USER_PREFIX = "select * from user ";
 
@@ -88,7 +88,7 @@ public class UserDaoImpl implements UserDao {
 				.getRealName(), user.getIdFaceImgUrl(), user.getIdBackImgUrl(),
 				user.getPersonIdImgUrl(), user.getAddress(), user
 						.getMaritalStatus().toString(), user.getDegree()
-						.toString(), user.getOpenid());
+						.toString(), user.getCreditLine(), user.getOpenid());
 	}
 
 	@Override
@@ -99,7 +99,7 @@ public class UserDaoImpl implements UserDao {
 		daoHelper.update(SQL_UPDATE_USER_STUFF_INFO2, errMsg, 
 				user.getRelativeName1(), user.getRelativeRelation1(), user.getRelativePhone1(),
 				user.getRelativeName2(), user.getRelativeRelation2(), user.getRelativePhone2(),
-				user.getOpenid());
+				user.getCreditLine(), user.getOpenid());
 	}
 
 	@Override
@@ -109,7 +109,7 @@ public class UserDaoImpl implements UserDao {
 				+ user.getOpenid();
 		daoHelper.update(SQL_UPDATE_USER_STUFF_INFO3, errMsg, user
 				.getPhone(), user.getPhonePassword(), user.getAccountNo(),
-				user.getOpenid());
+				user.getCreditLine(), user.getOpenid());
 	}
 
 	@Override
@@ -118,7 +118,7 @@ public class UserDaoImpl implements UserDao {
 		String errMsg = "Failed to update user stuff info step1, openid: "
 				+ user.getOpenid();
 		daoHelper.update(SQL_UPDATE_USER_STUFF_INFO4, errMsg, user
-				.getWxPayImgUrl(), user.getOpenid());
+				.getWxPayImgUrl(), user.getCreditLine(), user.getOpenid());
 	}
 
 	@Override

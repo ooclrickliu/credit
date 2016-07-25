@@ -1,5 +1,6 @@
 package cn.wisdom.service.wx.message;
 
+import java.text.MessageFormat;
 import java.util.Map;
 
 import me.chanjar.weixin.common.api.WxConsts;
@@ -35,7 +36,7 @@ public class WxMpEventHandler implements WxMpMessageHandler {
 	
 	private Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 	
-	private static final WxMpXmlOutTextMessage success = new WxMpXmlOutTextMessage();
+	public static final WxMpXmlOutTextMessage success = new WxMpXmlOutTextMessage();
 	
 	static {
 		success.setContent("success");
@@ -57,11 +58,13 @@ public class WxMpEventHandler implements WxMpMessageHandler {
 		else if (StringUtils.equalsIgnoreCase(wxMessage.getEvent(),
 				WxConsts.EVT_UNSUBSCRIBE)) {
 			// do nothing
+			response = success;
 		}
 		// 点击菜单
 		else if (StringUtils.equalsIgnoreCase(wxMessage.getEvent(),
 				WxConsts.EVT_CLICK)) {
 //			response = handleMenuClick(wxMessage);
+			response = success;
 		}
 
 		return response;
@@ -85,6 +88,8 @@ public class WxMpEventHandler implements WxMpMessageHandler {
 	}
 
 	private WxMpXmlOutMessage handleSubscribe(WxMpXmlMessage wxMessage) {
+		logger.info(MessageFormat.format("New user subscribe: {0}", wxMessage.getFromUserName()));
+		
 		// 保存用户
 		try {
 			userService.createUser(wxMessage.getFromUserName(), RoleType.CUSTOMER);

@@ -21,7 +21,7 @@ public class WxMpTextHandler implements WxMpMessageHandler {
 		
 		// handler different keywords
 		
-		return null;
+		return WxMpEventHandler.success;
 	}
 
 }
