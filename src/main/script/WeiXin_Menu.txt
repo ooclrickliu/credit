@@ -1,0 +1,29 @@
+{
+    "button": [
+        {
+            "type": "view",
+            "name": "申请借款",
+            "url": "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx17027d095ba928c0&redirect_uri=http%3A%2F%2Fcredit.southwisdom.cn&response_type=code&scope=snsapi_base&state=1#wechat_redirect"
+        },
+        {
+            "type": "view",
+            "name": "还款",
+            "url": "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx17027d095ba928c0&redirect_uri=http%3A%2F%2Fcredit.southwisdom.cn%2Freturn.html&response_type=code&scope=snsapi_base&state=1#wechat_redirect"
+        },
+        {
+            "name": "更多",
+            "sub_button": [
+                {
+                    "type": "view",
+                    "name": "我的借款",
+                    "url": "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx17027d095ba928c0&redirect_uri=http%3A%2F%2Fcredit.southwisdom.cn%2Fborrow_list.html&response_type=code&scope=snsapi_base&state=1#wechat_redirect"
+                },
+                {
+                    "type": "view",
+                    "name": "完善资料",
+                    "url": "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx17027d095ba928c0&redirect_uri=http%3A%2F%2Fcredit.southwisdom.cn%2Fuser_info.html&response_type=code&scope=snsapi_base&state=1#wechat_redirect"
+                }
+            ]
+        }
+    ]
+}
