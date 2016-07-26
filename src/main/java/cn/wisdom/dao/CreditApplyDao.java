@@ -19,7 +19,7 @@ public interface CreditApplyDao {
 
 	CreditApply getApply(long applyId);
 
-	List<CreditApply> getApplyList(long userId, List<ApplyState> applyStates, Date toDate);
+	List<CreditApply> getApplyList(long userId, List<ApplyState> applyStates, Date toDate, boolean asc);
 
 	void updateReturnInfo(CreditApply apply);
 

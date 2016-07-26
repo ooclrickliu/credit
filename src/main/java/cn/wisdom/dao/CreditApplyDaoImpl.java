@@ -93,7 +93,7 @@ public class CreditApplyDaoImpl implements CreditApplyDao {
 	}
 
 	@Override
-	public List<CreditApply> getApplyList(long userId, List<ApplyState> applyStates, Date toDate) {
+	public List<CreditApply> getApplyList(long userId, List<ApplyState> applyStates, Date toDate, boolean asc) {
 
 		String errMsg = "Failed to get credit apply of user: " + userId;
 		
@@ -112,6 +112,9 @@ public class CreditApplyDaoImpl implements CreditApplyDao {
 			
 			args.add(toDate);
 		}
+		
+		sql += (asc ? " order by id asc" : " order by id desc");
+		
 		
 		List<CreditApply> creditApplies = daoHelper.queryForList(
 				sql, creditApplyMapper, errMsg, args.toArray(new Object[0]));

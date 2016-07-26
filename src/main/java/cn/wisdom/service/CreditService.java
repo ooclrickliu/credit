@@ -25,9 +25,9 @@ public interface CreditService {
 
 	void returnFail(long payRecordId);
 
-	List<CreditApply> getApplyList(long userId);
+	List<CreditApply> getApplyList(long userId, boolean asc);
 	
-	List<CreditApply> getApplyList(long userId, List<ApplyState> states, Date toDate);
+	List<CreditApply> getApplyList(long userId, List<ApplyState> states, Date toDate, boolean asc);
 	
 	List<CreditApply> getTopayApplyList(long userId, DateRange dateRange);
 

@@ -250,17 +250,17 @@ public class CreditServiceImpl implements CreditService {
 	}
 
 	@Override
-	public List<CreditApply> getApplyList(long userId) {
+	public List<CreditApply> getApplyList(long userId, boolean asc) {
 
-		return getApplyList(userId, null, null);
+		return getApplyList(userId, null, null, asc);
 	}
 
 	@Override
 	public List<CreditApply> getApplyList(long userId,
-			List<ApplyState> applyStates, Date toDate) {
+			List<ApplyState> applyStates, Date toDate, boolean asc) {
 
 		List<CreditApply> applyList = creditApplyDao.getApplyList(userId,
-				applyStates, toDate);
+				applyStates, toDate, asc);
 
 		for (CreditApply creditApply : applyList) {
 			if (creditApply.getApplyState() == ApplyState.Approved
@@ -338,7 +338,7 @@ public class CreditServiceImpl implements CreditService {
 		states.add(ApplyState.Approved);
 		states.add(ApplyState.Overdue);
 		List<CreditApply> applyList = this.getApplyList(userId, states,
-				dateRange.exactTime());
+				dateRange.exactTime(), true);
 
 		return applyList;
 	}

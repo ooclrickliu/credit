@@ -140,7 +140,7 @@ public class CreditController {
 			throws ServiceException {
 
 		User user = SessionContext.getCurrentUser();
-		List<CreditApply> applyList =  creditService.getApplyList(user.getId(), null, null);
+		List<CreditApply> applyList =  creditService.getApplyList(user.getId(), false);
 		
 		return new CreditAPIResult(applyList);
 	}
