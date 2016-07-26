@@ -24,4 +24,6 @@ public interface CreditApplyDao {
 	void updateReturnInfo(CreditApply apply);
 
 	void updateOverdueState();
+
+	void deleteApply(long applyId);
 }

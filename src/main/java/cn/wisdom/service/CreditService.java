@@ -6,6 +6,7 @@ import java.util.List;
 import cn.wisdom.api.response.AccountProfile;
 import cn.wisdom.dao.constant.ApplyState;
 import cn.wisdom.dao.vo.CreditApply;
+import cn.wisdom.dao.vo.CreditPayRecord;
 import cn.wisdom.dao.vo.DateRange;
 import cn.wisdom.service.exception.ServiceException;
 
@@ -36,5 +37,9 @@ public interface CreditService {
 	List<CreditApply> getOverdueApplyList();
 
 	void updateOverdueApplyState();
+
+	void deleteApply(long applyId);
+
+	List<CreditPayRecord> getApplyPayRecords(String applyId);
 
 }

@@ -343,4 +343,15 @@ public class CreditServiceImpl implements CreditService {
 		return applyList;
 	}
 
+	@Override
+	public void deleteApply(long applyId) {
+		
+		creditApplyDao.deleteApply(applyId);
+	}
+
+	@Override
+	public List<CreditPayRecord> getApplyPayRecords(String applyId) {
+		
+		return creditPayDao.getApplyPayRecords(applyId);
+	}
 }

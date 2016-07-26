@@ -48,6 +48,9 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private AppProperty appProperty;
+	
+	@Autowired
+	private CreditCalculator creditCalculator;
 
 	private static final Logger logger = LoggerFactory
 			.getLogger(UserServiceImpl.class.getName());
@@ -217,6 +220,15 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public List<User> getUserList(UserState userState) {
 		return userDao.getUserList(userState);
+	}
+
+	@Override
+	public void approve(User user) {
+		
+		float creditLine = creditCalculator.calculateUserCreditLine(user);
+		user.setCreditLine(creditLine);
+		
+		userDao.updateUserApproveInfo(user);
 	}
 
 }

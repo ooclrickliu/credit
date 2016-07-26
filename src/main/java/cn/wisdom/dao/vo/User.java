@@ -113,6 +113,17 @@ public class User extends BaseEntity
 	@Column("approve_note")
 	private String approveNote;
 	
+	/**
+	 * 0: 关注用户，且资料不完善
+	 * 1: 1星级用户
+	 * 2: 2星级用户
+	 * 3: 3星级用户
+	 * 4: 4星级用户
+	 * 5: 5星级用户
+	 */
+	@Column("level")
+	private int level;  
+	
 	@Column("credit_line")
 	private float creditLine;
 	
@@ -412,5 +423,13 @@ public class User extends BaseEntity
 
 	public void setStep4Done(boolean step4Done) {
 		this.step4Done = step4Done;
+	}
+
+	public int getLevel() {
+		return level;
+	}
+
+	public void setLevel(int level) {
+		this.level = level;
 	}
 }

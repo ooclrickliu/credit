@@ -7,20 +7,15 @@
  */
 package cn.wisdom.api.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import cn.wisdom.api.response.CreditAPIResult;
 import cn.wisdom.common.model.JsonDocument;
-import cn.wisdom.common.utils.StringUtils;
-import cn.wisdom.dao.constant.UserState;
 import cn.wisdom.dao.vo.AppProperty;
 import cn.wisdom.dao.vo.User;
 import cn.wisdom.service.UserService;
@@ -55,7 +50,7 @@ public class UsersController
      */
     @RequestMapping(method = RequestMethod.GET, value = "/current")
     @ResponseBody
-    public JsonDocument getCurrentUser(@RequestParam String code) throws ServiceException
+    public JsonDocument getCurrentUser() throws ServiceException
     {
     	User user = SessionContext.getCurrentUser();
         return new CreditAPIResult(user);
@@ -152,40 +147,6 @@ public class UsersController
     	user.setWxPayImgUrl(userStuff4.getWxPayImgUrl());
     	
     	userService.submitStuffStep4(user);
-    	
-    	return SUCCESS;
-    }
-    
-    /**
-     * 设置授信额度.
-     * 
-     * @return
-     * @throws ServiceException
-     */
-    @RequestMapping(method = RequestMethod.GET, value = "/list")
-    @ResponseBody
-    public JsonDocument getUserList(@RequestParam String state) throws ServiceException
-    {
-    	List<User> userList = null;
-    	if (StringUtils.isNotBlank(state)) {
-    		UserState userState = UserState.valueOf(state);
-    		
-    		userList = userService.getUserList(userState);
-		}
-    	
-    	return new CreditAPIResult(userList);
-    }
-    
-    /**
-     * 设置授信额度.
-     * 
-     * @return
-     * @throws ServiceException
-     */
-    @RequestMapping(method = RequestMethod.POST, value = "/change/facility")
-    @ResponseBody
-    public JsonDocument changeFacility(@RequestParam String code) throws ServiceException
-    {
     	
     	return SUCCESS;
     }

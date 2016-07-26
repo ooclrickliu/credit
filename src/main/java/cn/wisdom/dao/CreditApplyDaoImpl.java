@@ -30,6 +30,8 @@ public class CreditApplyDaoImpl implements CreditApplyDao {
 	private static final String SQL_UPDATE_APPLY_RETURN_INFO = "update credit_apply set returned_base = ?, apply_state = ?, update_time = current_timestamp where id = ? and apply_state = 'Approved'";
 	
 	private static final String SQL_UPDATE_APPLY_OVERDUE = "update credit_apply set apply_state = 'Overdue', update_time = current_timestamp where apply_state = 'Approved' and due_time < current_timestamp ";
+	
+	private static final String SQL_DELETE_APPLY = "delete from credit_apply where id = ? and apply_state = 'Applying'";
 
 	private static final String SQL_GET_CREDIT_APPLY_PREFIX = "select * from credit_apply ";
 
@@ -137,6 +139,12 @@ public class CreditApplyDaoImpl implements CreditApplyDao {
 
 		String errMsg = "Failed to update credit apply to overdue.";
 		daoHelper.update(SQL_UPDATE_APPLY_OVERDUE, errMsg);
+	}
+
+	@Override
+	public void deleteApply(long applyId) {
+		String errMsg = "Failed to update credit apply to overdue.";
+		daoHelper.update(SQL_DELETE_APPLY, errMsg);
 	}
 
 }

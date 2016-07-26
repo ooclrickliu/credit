@@ -19,6 +19,8 @@ public class UserDaoImpl implements UserDao {
 
 	private static final String SQL_UPDATE_USER_WX_INFO = "update user set head_img_url = ?, update_time = current_timestamp where openid = ?";
 
+	private static final String SQL_UPDATE_USER_APPROVE_INFO = "update user set level = ?, user_state = ?, credit_line = ?, approve_note = ?, approve_time = current_timestamp, update_time = current_timestamp where openid = ?";
+
 	private static final String SQL_UPDATE_USER_STUFF_INFO1 = "update user set real_name = ?, id_face_img_url = ?, id_back_img_url = ?, person_id_img_url = ?, address = ?, marital_status = ?, degree = ?, credit_line = ?, update_time = current_timestamp where openid = ?";
 
 	private static final String SQL_UPDATE_USER_STUFF_INFO2 = "update user set relative_name1 = ?, relative_relation1 = ?, relative_phone1 = ?, relative_name2 = ?, relative_relation2 = ?, relative_phone2 = ?, credit_line = ?, update_time = current_timestamp where openid = ?";
@@ -31,7 +33,7 @@ public class UserDaoImpl implements UserDao {
 
 	private static final String SQL_GET_USER_BY_ID = SQL_GET_USER_PREFIX
 			+ "where id = ?";
-	
+
 	private static final String SQL_GET_USER_BY_OPENDID = SQL_GET_USER_PREFIX
 			+ "where openid = ?";
 
@@ -55,7 +57,17 @@ public class UserDaoImpl implements UserDao {
 
 		String errMsg = "Failed to update user wx info, openid: "
 				+ user.getOpenid();
-		daoHelper.update(SQL_UPDATE_USER_WX_INFO, errMsg, /*user.getNickName(),*/
+		daoHelper.update(SQL_UPDATE_USER_APPROVE_INFO, errMsg, user.getLevel(),
+				user.getUserState().toString(), user.getCreditLine(),
+				user.getApproveNote(), user.getOpenid());
+	}
+
+	@Override
+	public void updateUserApproveInfo(User user) {
+
+		String errMsg = "Failed to update user approve info, openid: "
+				+ user.getOpenid();
+		daoHelper.update(SQL_UPDATE_USER_WX_INFO, errMsg, /* user.getNickName(), */
 				user.getHeadImgUrl(), user.getOpenid());
 	}
 
@@ -73,8 +85,8 @@ public class UserDaoImpl implements UserDao {
 	public User getUserById(long userId) {
 
 		String errMsg = "Failed to get user by id: " + userId;
-		User user = daoHelper.queryForObject(SQL_GET_USER_BY_ID,
-				userMapper, errMsg, userId);
+		User user = daoHelper.queryForObject(SQL_GET_USER_BY_ID, userMapper,
+				errMsg, userId);
 
 		return user;
 	}
@@ -96,9 +108,10 @@ public class UserDaoImpl implements UserDao {
 
 		String errMsg = "Failed to update user stuff info step1, openid: "
 				+ user.getOpenid();
-		daoHelper.update(SQL_UPDATE_USER_STUFF_INFO2, errMsg, 
-				user.getRelativeName1(), user.getRelativeRelation1(), user.getRelativePhone1(),
-				user.getRelativeName2(), user.getRelativeRelation2(), user.getRelativePhone2(),
+		daoHelper.update(SQL_UPDATE_USER_STUFF_INFO2, errMsg,
+				user.getRelativeName1(), user.getRelativeRelation1(),
+				user.getRelativePhone1(), user.getRelativeName2(),
+				user.getRelativeRelation2(), user.getRelativePhone2(),
 				user.getCreditLine(), user.getOpenid());
 	}
 
@@ -107,8 +120,8 @@ public class UserDaoImpl implements UserDao {
 
 		String errMsg = "Failed to update user stuff info step1, openid: "
 				+ user.getOpenid();
-		daoHelper.update(SQL_UPDATE_USER_STUFF_INFO3, errMsg, user
-				.getPhone(), user.getPhonePassword(), user.getAccountNo(),
+		daoHelper.update(SQL_UPDATE_USER_STUFF_INFO3, errMsg, user.getPhone(),
+				user.getPhonePassword(), user.getAccountNo(),
 				user.getCreditLine(), user.getOpenid());
 	}
 
@@ -117,8 +130,8 @@ public class UserDaoImpl implements UserDao {
 
 		String errMsg = "Failed to update user stuff info step1, openid: "
 				+ user.getOpenid();
-		daoHelper.update(SQL_UPDATE_USER_STUFF_INFO4, errMsg, user
-				.getWxPayImgUrl(), user.getCreditLine(), user.getOpenid());
+		daoHelper.update(SQL_UPDATE_USER_STUFF_INFO4, errMsg,
+				user.getWxPayImgUrl(), user.getCreditLine(), user.getOpenid());
 	}
 
 	@Override

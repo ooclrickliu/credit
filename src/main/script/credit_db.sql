@@ -89,3 +89,6 @@ CREATE TABLE IF NOT EXISTS `credit_pay_record` (
   PRIMARY KEY (`id`),
   KEY `apply_id` (`apply_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=6 ;
+
+
+alter table user add level int DEFAULT 0 after approve_note;
