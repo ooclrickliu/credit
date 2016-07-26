@@ -48,7 +48,7 @@ public class CreditAdminController {
 	 * @return
 	 * @throws ServiceException
 	 */
-	@RequestMapping(method = RequestMethod.POST, value = "/apply/list")
+	@RequestMapping(method = RequestMethod.GET, value = "/apply/list")
 	@ResponseBody
 	public JsonDocument getApplyList(@RequestParam String state)
 			throws ServiceException {
@@ -94,7 +94,7 @@ public class CreditAdminController {
 	 * @return
 	 * @throws ServiceException
 	 */
-	@RequestMapping(method = RequestMethod.POST, value = "/return/list")
+	@RequestMapping(method = RequestMethod.GET, value = "/return/list")
 	@ResponseBody
 	public JsonDocument confirmReturn(@RequestParam String state)
 			throws ServiceException {

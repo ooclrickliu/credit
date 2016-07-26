@@ -52,26 +52,26 @@ public class AdminAccessInterceptor extends HandlerInterceptorAdapter
     {
         super.preHandle(request, response, handler);
         
-        User user = null;
-        String openId = HttpUtils.getParamValue(request, OPENID);
-        if (StringUtils.isNotBlank(openId)) {
-        	user = userService.getUserByOpenId(openId); 
-        	
-		}
-    	if (user == null) {
-            String code = HttpUtils.getParamValue(request, OAUTH_CODE);
-            if (StringUtils.isNotBlank(code)) {
-            	user = userService.getUserByOauthCode(code);
-			}
-		}
-        
-        if (user == null) {
-        	writeResponse(response, ServiceErrorCode.NOT_SUBSCRIB);
-        	return false;
-		}
-        else {
-        	initSessionContext(user);
-		}
+//        User user = null;
+//        String openId = HttpUtils.getParamValue(request, OPENID);
+//        if (StringUtils.isNotBlank(openId)) {
+//        	user = userService.getUserByOpenId(openId); 
+//        	
+//		}
+//    	if (user == null) {
+//            String code = HttpUtils.getParamValue(request, OAUTH_CODE);
+//            if (StringUtils.isNotBlank(code)) {
+//            	user = userService.getUserByOauthCode(code);
+//			}
+//		}
+//        
+//        if (user == null) {
+//        	writeResponse(response, ServiceErrorCode.NOT_SUBSCRIB);
+//        	return false;
+//		}
+//        else {
+//        	initSessionContext(user);
+//		}
 
         return true;
     }
