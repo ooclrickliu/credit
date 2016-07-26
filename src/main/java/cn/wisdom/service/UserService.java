@@ -78,5 +78,7 @@ public interface UserService
 	void submitStuffStep4(User user);
 	
 	List<User> getUserList(UserState userState);
+
+	void approve(User user);
     
 }

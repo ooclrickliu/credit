@@ -37,7 +37,7 @@ import cn.wisdom.service.exception.ServiceException;
  * @See
  * @Since [OVT Cloud Platform]/[API] 1.0
  */
-public class PlatformAccessInterceptor extends HandlerInterceptorAdapter
+public class UserAccessInterceptor extends HandlerInterceptorAdapter
 {
     private static final String OAUTH_CODE = "code";
     

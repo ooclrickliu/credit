@@ -1,5 +1,7 @@
 package cn.wisdom.dao;
 
+import java.util.List;
+
 import cn.wisdom.dao.constant.ApplyState;
 import cn.wisdom.dao.vo.CreditPayRecord;
 
@@ -21,4 +23,8 @@ public interface CreditPayDao {
 			ApplyState approvefailed);
 
 	void updatePayRecordReturnInfo(CreditPayRecord payRecord);
+
+	List<CreditPayRecord> getApplyPayRecords(String applyId);
+
+	List<CreditPayRecord> getApplyPayRecords(ApplyState applyState);
 }

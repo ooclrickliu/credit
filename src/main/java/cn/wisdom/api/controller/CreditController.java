@@ -23,6 +23,7 @@ import cn.wisdom.api.response.AccountProfile;
 import cn.wisdom.api.response.CreditAPIResult;
 import cn.wisdom.common.model.JsonDocument;
 import cn.wisdom.dao.vo.CreditApply;
+import cn.wisdom.dao.vo.CreditPayRecord;
 import cn.wisdom.dao.vo.DateRange;
 import cn.wisdom.dao.vo.User;
 import cn.wisdom.service.CreditService;
@@ -140,7 +141,7 @@ public class CreditController {
 			throws ServiceException {
 
 		User user = SessionContext.getCurrentUser();
-		List<CreditApply> applyList =  creditService.getApplyList(user.getId(), null, null);
+		List<CreditApply> applyList =  creditService.getApplyList(user.getId(), false);
 		
 		return new CreditAPIResult(applyList);
 	}
@@ -161,6 +162,21 @@ public class CreditController {
 		
 		return new CreditAPIResult(applyList);
 	}
+	/**
+	 * 还款显示的列表：Approved, Overdue
+	 * 
+	 * @return
+	 * @throws ServiceException
+	 */
+	@RequestMapping(method = RequestMethod.GET, value = "/apply/pay/list")
+	@ResponseBody
+	public JsonDocument listApplyPayRecord(@RequestParam String applyId)
+			throws ServiceException {
+		
+		List<CreditPayRecord> applyList =  creditService.getApplyPayRecords(applyId);
+		
+		return new CreditAPIResult(applyList);
+	}
 
 	/**
 	 * 还款
@@ -175,35 +191,19 @@ public class CreditController {
     	creditService.returnCredit(applyId, returnCreditImgUrl);
         return SUCCESS;
     }
-
-	/**
-	 * 确认还款
-	 * 
-	 * @return
-	 * @throws ServiceException
-	 */
-	@RequestMapping(method = RequestMethod.POST, value = "/return/confirm")
-	@ResponseBody
-	public JsonDocument confirmReturn(@RequestParam long payRecordId, float returnAmount)
-			throws ServiceException {
-
-		creditService.confirmReturn(payRecordId, returnAmount);
-		
-		return SUCCESS;
-	}
-
+	
 	/**
 	 * 确认还款失败
 	 * 
 	 * @return
 	 * @throws ServiceException
 	 */
-	@RequestMapping(method = RequestMethod.POST, value = "/return/fail")
+	@RequestMapping(method = RequestMethod.POST, value = "/apply/delete")
 	@ResponseBody
-	public JsonDocument returnFail(@RequestParam long payRecordId)
+	public JsonDocument deleteApply(@RequestParam long applyId)
 			throws ServiceException {
-
-		creditService.returnFail(payRecordId);
+		
+		creditService.deleteApply(applyId);
 		
 		return SUCCESS;
 	}

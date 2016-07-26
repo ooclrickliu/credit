@@ -1,5 +1,7 @@
 package cn.wisdom.dao;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -19,13 +21,19 @@ public class CreditPayDaoImpl implements CreditPayDao {
 	
 	private static final String SQL_UPDATE_PAY_INFO = "update credit_pay_record set returned_amount = ?, remain_base = ?, return_state = ?, update_time = current_timestamp where id = ? and return_state = ?";
 
-	private static final String SQL_GET_CREDIT_APPLY_PREFIX = "select * from credit_pay_record ";
+	private static final String SQL_GET_CREDIT_PAY_PREFIX = "select * from credit_pay_record ";
 
-	private static final String SQL_GET_LAST_PAY = SQL_GET_CREDIT_APPLY_PREFIX
+	private static final String SQL_GET_LAST_PAY_OF_APPLY = SQL_GET_CREDIT_PAY_PREFIX
 			+ "where apply_id = ? order by id desc limit 1";
+	
+	private static final String SQL_GET_All_PAY_OF_APPLY = SQL_GET_CREDIT_PAY_PREFIX
+			+ "where apply_id = ? order by id desc";
 
-	private static final String SQL_GET_BY_ID = SQL_GET_CREDIT_APPLY_PREFIX
+	private static final String SQL_GET_BY_ID = SQL_GET_CREDIT_PAY_PREFIX
 			+ "where id = ?";
+	
+	private static final String SQL_GET_BY_STATE = SQL_GET_CREDIT_PAY_PREFIX
+			+ "where return_state = ?";
 
 	private static final DaoRowMapper<CreditPayRecord> creditPayMapper = new DaoRowMapper<CreditPayRecord>(
 			CreditPayRecord.class);
@@ -35,7 +43,7 @@ public class CreditPayDaoImpl implements CreditPayDao {
 
 		String errMsg = "Failed to get credit pay record of apply: " + applyId;
 		CreditPayRecord creditPayRecord = daoHelper.queryForObject(
-				SQL_GET_LAST_PAY, creditPayMapper, errMsg, applyId);
+				SQL_GET_LAST_PAY_OF_APPLY, creditPayMapper, errMsg, applyId);
 
 		return creditPayRecord;
 	}
@@ -80,4 +88,21 @@ public class CreditPayDaoImpl implements CreditPayDao {
 				ApplyState.Approving.toString());
 	}
 
+	@Override
+	public List<CreditPayRecord> getApplyPayRecords(String applyId) {
+		String errMsg = "Failed to get credit pay record by apply id: " + applyId;
+		List<CreditPayRecord> creditPayRecords = daoHelper.queryForList(
+				SQL_GET_All_PAY_OF_APPLY, creditPayMapper, errMsg, applyId);
+		
+		return creditPayRecords;
+	}
+	
+	@Override
+	public List<CreditPayRecord> getApplyPayRecords(ApplyState applyState) {
+		String errMsg = "Failed to get credit pay record by state: " + applyState;
+		List<CreditPayRecord> creditPayRecords = daoHelper.queryForList(
+				SQL_GET_BY_STATE, creditPayMapper, errMsg, applyState.toString());
+		
+		return creditPayRecords;
+	}
 }

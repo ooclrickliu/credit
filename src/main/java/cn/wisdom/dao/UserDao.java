@@ -25,4 +25,6 @@ public interface UserDao {
 
 	List<User> getUserList(UserState userState);
 
+	void updateUserApproveInfo(User user);
+
 }

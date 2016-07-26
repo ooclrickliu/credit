@@ -30,14 +30,16 @@ public class CreditApplyDaoImpl implements CreditApplyDao {
 	private static final String SQL_UPDATE_APPLY_RETURN_INFO = "update credit_apply set returned_base = ?, apply_state = ?, update_time = current_timestamp where id = ? and apply_state = 'Approved'";
 	
 	private static final String SQL_UPDATE_APPLY_OVERDUE = "update credit_apply set apply_state = 'Overdue', update_time = current_timestamp where apply_state = 'Approved' and due_time < current_timestamp ";
+	
+	private static final String SQL_DELETE_APPLY = "delete from credit_apply where id = ? and apply_state = 'Applying'";
 
 	private static final String SQL_GET_CREDIT_APPLY_PREFIX = "select * from credit_apply ";
 
 	private static final String SQL_GET_APPLY_BY_ID = SQL_GET_CREDIT_APPLY_PREFIX
 			+ "where id = ?";
 
-	private static final String SQL_GET_APPLY_LIST_BY_USER = SQL_GET_CREDIT_APPLY_PREFIX
-			+ "where user_id = ? ";
+	private static final String SQL_GET_APPLY_LIST = SQL_GET_CREDIT_APPLY_PREFIX
+			+ "where 1 = 1 ";
 
 	private static final DaoRowMapper<CreditApply> creditApplyMapper = new DaoRowMapper<CreditApply>(
 			CreditApply.class);
@@ -93,18 +95,22 @@ public class CreditApplyDaoImpl implements CreditApplyDao {
 	}
 
 	@Override
-	public List<CreditApply> getApplyList(long userId, List<ApplyState> applyStates, Date toDate) {
+	public List<CreditApply> getApplyList(long userId, List<ApplyState> applyStates, Date toDate, boolean asc) {
 
 		String errMsg = "Failed to get credit apply of user: " + userId;
 		
-		String sql = SQL_GET_APPLY_LIST_BY_USER;
+		String sql = SQL_GET_APPLY_LIST;
+		
+		List<Object> args = new ArrayList<Object>();
+		if (userId > 0) {
+			sql += "user_id = ?";
+			args.add(userId);
+		}
+		
 		if (CollectionUtils.isNotEmpty(applyStates)) {
 			String stateSql = " and apply_state in (" + StringUtils.getCSV(applyStates, true) + ")";
 			sql += stateSql;
 		}
-		
-		List<Object> args = new ArrayList<Object>();
-		args.add(userId);
 		
 		if (toDate != null) {
 			String toDateSql = " and due_time <= ?";
@@ -112,6 +118,9 @@ public class CreditApplyDaoImpl implements CreditApplyDao {
 			
 			args.add(toDate);
 		}
+		
+		sql += (asc ? " order by id asc" : " order by id desc");
+		
 		
 		List<CreditApply> creditApplies = daoHelper.queryForList(
 				sql, creditApplyMapper, errMsg, args.toArray(new Object[0]));
@@ -134,6 +143,12 @@ public class CreditApplyDaoImpl implements CreditApplyDao {
 
 		String errMsg = "Failed to update credit apply to overdue.";
 		daoHelper.update(SQL_UPDATE_APPLY_OVERDUE, errMsg);
+	}
+
+	@Override
+	public void deleteApply(long applyId) {
+		String errMsg = "Failed to update credit apply to overdue.";
+		daoHelper.update(SQL_DELETE_APPLY, errMsg);
 	}
 
 }
