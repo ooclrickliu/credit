@@ -36,7 +36,7 @@ import cn.wisdom.service.exception.ServiceException;
 
 @Controller
 @RequestMapping("/admin/credit")
-public class CreditController {
+public class CreditAdminController {
 	@Autowired
 	private CreditService creditService;
 

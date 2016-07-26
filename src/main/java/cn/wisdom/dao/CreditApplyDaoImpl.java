@@ -103,7 +103,7 @@ public class CreditApplyDaoImpl implements CreditApplyDao {
 		
 		List<Object> args = new ArrayList<Object>();
 		if (userId > 0) {
-			sql += "user_id = ?";
+			sql += " and user_id = ?";
 			args.add(userId);
 		}
 		

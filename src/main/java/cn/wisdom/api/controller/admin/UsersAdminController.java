@@ -37,7 +37,7 @@ import cn.wisdom.service.exception.ServiceException;
 
 @Controller
 @RequestMapping("/admin/users")
-public class UsersController
+public class UsersAdminController
 {
     @Autowired
     private UserService userService;
