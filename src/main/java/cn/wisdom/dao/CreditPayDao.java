@@ -25,4 +25,6 @@ public interface CreditPayDao {
 	void updatePayRecordReturnInfo(CreditPayRecord payRecord);
 
 	List<CreditPayRecord> getApplyPayRecords(String applyId);
+
+	List<CreditPayRecord> getApplyPayRecords(ApplyState applyState);
 }

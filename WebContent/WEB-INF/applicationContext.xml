@@ -28,12 +28,12 @@
 	<!-- Interceptor -->
 	<mvc:interceptors>
 		<mvc:interceptor>
-			<mvc:mapping path="/users/*" />
-			<mvc:mapping path="/credit/*" />
+			<mvc:mapping path="/users/**" />
+			<mvc:mapping path="/credit/**" />
 			<bean class="cn.wisdom.api.interceptor.UserAccessInterceptor" />
 		</mvc:interceptor>
 		<mvc:interceptor>
-			<mvc:mapping path="/admin/*" />
+			<mvc:mapping path="/admin/**" />
 			<bean class="cn.wisdom.api.interceptor.AdminAccessInterceptor" />
 		</mvc:interceptor>
 	</mvc:interceptors>

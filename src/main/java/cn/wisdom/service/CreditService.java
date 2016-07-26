@@ -42,4 +42,6 @@ public interface CreditService {
 
 	List<CreditPayRecord> getApplyPayRecords(String applyId);
 
+	List<CreditPayRecord> getApplyPayRecords(ApplyState applyState);
+
 }

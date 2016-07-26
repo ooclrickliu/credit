@@ -38,8 +38,8 @@ public class CreditApplyDaoImpl implements CreditApplyDao {
 	private static final String SQL_GET_APPLY_BY_ID = SQL_GET_CREDIT_APPLY_PREFIX
 			+ "where id = ?";
 
-	private static final String SQL_GET_APPLY_LIST_BY_USER = SQL_GET_CREDIT_APPLY_PREFIX
-			+ "where user_id = ? ";
+	private static final String SQL_GET_APPLY_LIST = SQL_GET_CREDIT_APPLY_PREFIX
+			+ "where 1 = 1 ";
 
 	private static final DaoRowMapper<CreditApply> creditApplyMapper = new DaoRowMapper<CreditApply>(
 			CreditApply.class);
@@ -99,14 +99,18 @@ public class CreditApplyDaoImpl implements CreditApplyDao {
 
 		String errMsg = "Failed to get credit apply of user: " + userId;
 		
-		String sql = SQL_GET_APPLY_LIST_BY_USER;
+		String sql = SQL_GET_APPLY_LIST;
+		
+		List<Object> args = new ArrayList<Object>();
+		if (userId > 0) {
+			sql += "user_id = ?";
+			args.add(userId);
+		}
+		
 		if (CollectionUtils.isNotEmpty(applyStates)) {
 			String stateSql = " and apply_state in (" + StringUtils.getCSV(applyStates, true) + ")";
 			sql += stateSql;
 		}
-		
-		List<Object> args = new ArrayList<Object>();
-		args.add(userId);
 		
 		if (toDate != null) {
 			String toDateSql = " and due_time <= ?";

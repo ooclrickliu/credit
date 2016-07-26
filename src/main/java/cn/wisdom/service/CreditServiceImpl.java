@@ -354,4 +354,9 @@ public class CreditServiceImpl implements CreditService {
 		
 		return creditPayDao.getApplyPayRecords(applyId);
 	}
+	
+	@Override
+	public List<CreditPayRecord> getApplyPayRecords(ApplyState applyState) {
+		return creditPayDao.getApplyPayRecords(applyState);
+	}
 }
