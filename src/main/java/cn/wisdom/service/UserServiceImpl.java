@@ -21,12 +21,17 @@ import org.springframework.stereotype.Service;
 
 import cn.wisdom.common.log.Logger;
 import cn.wisdom.common.log.LoggerFactory;
+import cn.wisdom.common.utils.DataFormatValidator;
+import cn.wisdom.common.utils.EncryptionUtils;
 import cn.wisdom.common.utils.StringUtils;
 import cn.wisdom.dao.UserDao;
 import cn.wisdom.dao.constant.RoleType;
 import cn.wisdom.dao.constant.UserState;
 import cn.wisdom.dao.vo.AppProperty;
 import cn.wisdom.dao.vo.User;
+import cn.wisdom.service.context.SessionContext;
+import cn.wisdom.service.exception.InvalidDataInputException;
+import cn.wisdom.service.exception.ServiceErrorCode;
 import cn.wisdom.service.exception.ServiceException;
 import cn.wisdom.service.wx.WXService;
 
@@ -51,6 +56,9 @@ public class UserServiceImpl implements UserService {
 	
 	@Autowired
 	private CreditCalculator creditCalculator;
+	
+	@Autowired
+	private AccessTokenService accessTokenService;
 
 	private static final Logger logger = LoggerFactory
 			.getLogger(UserServiceImpl.class.getName());
@@ -231,4 +239,92 @@ public class UserServiceImpl implements UserService {
 		userDao.updateUserApproveInfo(user);
 	}
 
+	@Override
+	public String login(String phone, String password) throws ServiceException {
+		
+		User user = userDao.getUserByPhone(phone);
+		if (user == null)
+        {
+            throw new ServiceException(ServiceErrorCode.USER_NOT_EXIST,
+                    "User is not exist!");
+        }
+
+        // check password
+        if (!StringUtils.equals(user.getPassword(),
+                EncryptionUtils.encrypt(password)))
+        {
+            throw new ServiceException(ServiceErrorCode.WRONG_PASSWORD,
+                    "Password is wrong!");
+        }
+        
+        // generate access token
+        String accessToken =
+                accessTokenService.generateAccessToken(user.getId());
+		
+		return accessToken;
+	}
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.ovt.service.UserService#logout(java.lang.String)
+     */
+    public void logout(String accessToken) throws ServiceException
+    {
+        if (StringUtils.isNotBlank(accessToken))
+        {
+            accessTokenService.invalidToken(accessToken);
+        }
+    }
+
+    public String changePassword(String oldPassword, String newPassword)
+            throws ServiceException
+    {
+        // check format
+        if (!DataFormatValidator.isValidPassword(oldPassword)
+                || !DataFormatValidator.isValidPassword(newPassword))
+        {
+            throw new InvalidDataInputException(
+                    ServiceErrorCode.INVALID_PASSWORD_FORMAT,
+                    "Password format is invalid!");
+        }
+
+        // new password can't be same as old one
+        if (StringUtils.equals(oldPassword, newPassword))
+        {
+            throw new InvalidDataInputException(
+                    ServiceErrorCode.SAME_PASSWORD,
+                    "New password can't be same as old one!");
+        }
+
+        User currentUser = SessionContext.getCurrentUser();
+
+        // check old password
+        if (!StringUtils.equals(currentUser.getPassword(),
+                EncryptionUtils.encrypt(oldPassword)))
+        {
+            throw new InvalidDataInputException(
+                    ServiceErrorCode.WRONG_PASSWORD, "Old password is wrong!");
+        }
+
+        // change password flow
+        String accessToken = changePassword(newPassword, currentUser.getId());
+
+        return accessToken;
+    }
+
+    private String changePassword(String newPassword, long userId)
+            throws ServiceException
+    {
+        // update
+    	userDao.updatePassword(userId, EncryptionUtils.encrypt(newPassword));
+
+        // invalid all old access tokens of user
+        accessTokenService.invalidTokensByUser(userId);
+
+        // generate new access token
+        String accessToken =
+                accessTokenService.generateAccessToken(userId);
+        return accessToken;
+    }
 }

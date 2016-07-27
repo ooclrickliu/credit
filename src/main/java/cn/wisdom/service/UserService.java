@@ -80,5 +80,13 @@ public interface UserService
 	List<User> getUserList(UserState userState);
 
 	void approve(User user);
+	
+	/////////////////////////////////////////////
+	
+	String login(String phone, String password) throws ServiceException;
+	
+    void logout(String accessToken) throws ServiceException;
+
+	String changePassword(String oldPassword, String newPassword) throws ServiceException;
     
 }

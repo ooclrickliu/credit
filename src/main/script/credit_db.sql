@@ -92,3 +92,19 @@ CREATE TABLE IF NOT EXISTS `credit_pay_record` (
 
 
 alter table user add level int DEFAULT 0 after approve_note;
+
+-- Table user_access_token
+CREATE TABLE IF NOT EXISTS access_token (
+    id bigint    NOT NULL  AUTO_INCREMENT,
+    user_id bigint    NOT NULL DEFAULT 0 ,
+    access_token varchar(50)    NOT NULL DEFAULT '' ,
+    client_type SMALLINT    NOT NULL DEFAULT 0 ,
+    expire_time timestamp    NULL ,
+    create_time timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP ,
+    update_time timestamp    NOT NULL ,
+    is_delete SMALLINT    NOT NULL DEFAULT 0 ,
+    CONSTRAINT user_access_token_pk PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+alter table user add password varchar(50) DEFAULT '' after openid;
+create unique index idx_user_phone on user(phone);

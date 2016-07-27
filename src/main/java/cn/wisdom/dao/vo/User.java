@@ -34,6 +34,9 @@ public class User extends BaseEntity
     private String roleValue;
 	private RoleType role;
 	
+	@Column("password")
+    private String password;
+	
 	// step1
 	@Column("real_name")
 	private String realName;
@@ -431,5 +434,13 @@ public class User extends BaseEntity
 
 	public void setLevel(int level) {
 		this.level = level;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
 	}
 }

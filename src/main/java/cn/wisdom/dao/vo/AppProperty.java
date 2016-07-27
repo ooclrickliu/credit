@@ -27,8 +27,8 @@ import cn.wisdom.common.utils.StringUtils;
 @Component
 public class AppProperty
 {
-	@Value("${cookie.access_token.age}")
-	public int cookieAccessTokenAge;
+	@Value("${cookie.access_token.hour.age}")
+	public int cookieAccessTokenHourAge;
 
 	@Value("${credit.rate.day}")
 	public float creditRatePerDay;

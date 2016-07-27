@@ -27,4 +27,8 @@ public interface UserDao {
 
 	void updateUserApproveInfo(User user);
 
+	User getUserByPhone(String phone);
+
+	void updatePassword(long userId, String encrypt);
+
 }

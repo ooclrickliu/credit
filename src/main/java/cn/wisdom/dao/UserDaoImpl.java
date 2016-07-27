@@ -28,11 +28,16 @@ public class UserDaoImpl implements UserDao {
 	private static final String SQL_UPDATE_USER_STUFF_INFO3 = "update user set phone = ?, phone_password = ?, account_no = ?, credit_line = ?, update_time = current_timestamp where openid = ?";
 
 	private static final String SQL_UPDATE_USER_STUFF_INFO4 = "update user set wx_pay_img_url = ?, credit_line = ?, update_time = current_timestamp where openid = ?";
+	
+	private static final String SQL_UPDATE_USER_PASSWORD = "update user set password = ?, update_time = current_timestamp where phone = ?";
 
 	private static final String SQL_GET_USER_PREFIX = "select * from user ";
 
 	private static final String SQL_GET_USER_BY_ID = SQL_GET_USER_PREFIX
 			+ "where id = ?";
+	
+	private static final String SQL_GET_USER_BY_PHONE = SQL_GET_USER_PREFIX
+			+ "where phone = ?";
 
 	private static final String SQL_GET_USER_BY_OPENDID = SQL_GET_USER_PREFIX
 			+ "where openid = ?";
@@ -140,6 +145,25 @@ public class UserDaoImpl implements UserDao {
 		String errMsg = "Failed to query user of state: " + userState;
 		return daoHelper.queryForList(SQL_GET_USER_BY_STATE, userMapper,
 				errMsg, userState.toString());
+	}
+
+	@Override
+	public User getUserByPhone(String phone) {
+
+		String errMsg = "Failed to get user by phone: " + phone;
+		User user = daoHelper.queryForObject(SQL_GET_USER_BY_PHONE, userMapper,
+				errMsg, phone);
+
+		return user;
+	}
+
+	@Override
+	public void updatePassword(long userId, String newPassword) {
+
+		String errMsg = "Failed to update user stuff info step1, openid: "
+				+ userId;
+		daoHelper.update(SQL_UPDATE_USER_PASSWORD, errMsg,
+				newPassword, userId);
 	}
 
 }

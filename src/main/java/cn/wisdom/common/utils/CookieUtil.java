@@ -27,8 +27,10 @@ public class CookieUtil
 
     public static final String KEY_ACCESS_TOKEN = "access_token";
 
+    public static final int ONE_HOUR = 3600;
+
     /**
-     * Add a new cookie and sepcify the age.
+     * Add a new cookie and specify the age.
      * 
      * @param response
      * @param name
