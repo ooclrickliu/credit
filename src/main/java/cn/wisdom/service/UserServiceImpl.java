@@ -93,6 +93,18 @@ public class UserServiceImpl implements UserService {
 
 		return userDao.getUserByOpenid(openId);
 	}
+	
+	@Override
+	public User getUserByAccessToken(String accessToken) throws ServiceException {
+		User user = null;
+		long userId = accessTokenService.getUserByAccessToken(accessToken);
+		
+		if (userId > 0) {
+			user = userDao.getUserById(userId);
+		}
+		
+		return user;
+	}
 
 	@Override
 	public User getUserByOauthCode(String oauthCode) {

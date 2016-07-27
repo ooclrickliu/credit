@@ -66,6 +66,15 @@ public interface UserService
 	 */
 	User getUserById(long userId);
 	
+	/**
+	 * 通过AccessToken获取用户信息
+	 * 
+	 * @param userId
+	 * @return
+	 * @throws ServiceException 
+	 */
+	User getUserByAccessToken(String accessToken) throws ServiceException;
+	
 	/////////////////////////////////////////////
 
 

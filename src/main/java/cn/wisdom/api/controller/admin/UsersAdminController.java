@@ -53,7 +53,7 @@ public class UsersAdminController {
 	private static final JsonDocument SUCCESS = CreditAPIResult.SUCCESS;
 
 	/**
-	 * Get current User by oauth code.
+	 * Get current User.
 	 * 
 	 * @return
 	 * @throws ServiceException
@@ -156,7 +156,7 @@ public class UsersAdminController {
 	 * @return
 	 * @throws ServiceException
 	 */
-	@RequestMapping(method = RequestMethod.GET, value = "/approve")
+	@RequestMapping(method = RequestMethod.POST, value = "/approve")
 	@ResponseBody
 	public JsonDocument approve(@RequestBody User user) throws ServiceException {
 		User selectedUser = userService.getUserById(user.getId());

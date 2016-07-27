@@ -23,6 +23,7 @@ public class ServiceErrorCode
     
     //user
     public static final String NOT_SUBSCRIB = "NotSubscribe";
+    public static final String NOT_LOGIN = "NotLogin";
     public static final String NO_AVAILABLE_CREDIT_LINE = "NoAvailableCreditLine";
     
     //WX
