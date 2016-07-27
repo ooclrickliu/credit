@@ -260,6 +260,8 @@ public class UserServiceImpl implements UserService {
             throw new ServiceException(ServiceErrorCode.USER_NOT_EXIST,
                     "User is not exist!");
         }
+		
+		SessionContext.setCurrentUser(user);
 
         // check password
         if (!StringUtils.equals(user.getPassword(),

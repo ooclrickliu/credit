@@ -11,6 +11,7 @@ import java.text.NumberFormat;
 import java.util.Locale;
 
 import cn.wisdom.common.exception.OVTException;
+import cn.wisdom.common.utils.EncryptionUtils;
 import cn.wisdom.common.utils.JsonUtils;
 import cn.wisdom.dao.constant.RoleType;
 import cn.wisdom.dao.constant.UserState;
@@ -179,18 +180,21 @@ public class TestMain
 //		System.out.println(URIUtil.encodeURIComponent(redirectURI3));
 //		System.out.println(URIUtil.encodeURIComponent(redirectURI4));
     	
-    	User user = new User();
-    
-    	user.setRole(RoleType.CUSTOMER);
-    	user.setUserState(UserState.Approved);
-    	try {
-			String json = JsonUtils.toJson(user);
-			
-			System.out.println(json);
-		} catch (OVTException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//    	User user = new User();
+//    
+//    	user.setRole(RoleType.CUSTOMER);
+//    	user.setUserState(UserState.Approved);
+//    	try {
+//			String json = JsonUtils.toJson(user);
+//			
+//			System.out.println(json);
+//		} catch (OVTException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+    	
+    	String password = "88888888";
+    	System.out.println(EncryptionUtils.encrypt(password));
     }
     
     public static String formatNumber(double num,int maxFractionDigits) {

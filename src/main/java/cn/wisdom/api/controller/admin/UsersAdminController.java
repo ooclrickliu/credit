@@ -7,6 +7,7 @@
  */
 package cn.wisdom.api.controller.admin;
 
+import java.text.MessageFormat;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,11 +25,13 @@ import cn.wisdom.api.response.CreditAPIResult;
 import cn.wisdom.common.model.JsonDocument;
 import cn.wisdom.common.utils.CookieUtil;
 import cn.wisdom.common.utils.StringUtils;
+import cn.wisdom.dao.constant.RoleType;
 import cn.wisdom.dao.constant.UserState;
 import cn.wisdom.dao.vo.AppProperty;
 import cn.wisdom.dao.vo.User;
 import cn.wisdom.service.UserService;
 import cn.wisdom.service.context.SessionContext;
+import cn.wisdom.service.exception.ServiceErrorCode;
 import cn.wisdom.service.exception.ServiceException;
 
 /**
@@ -78,6 +81,12 @@ public class UsersAdminController {
 			throws ServiceException {
 		
 		String accessToken = userService.login(phone, password);
+		
+		User user = SessionContext.getCurrentUser();
+		if (user.getRole() != RoleType.ADMIN) {
+			String errMsg = MessageFormat.format("Admin [{0}] not exists.", phone);
+			throw new ServiceException(ServiceErrorCode.USER_NOT_EXIST, errMsg);
+		}
 
 		CookieUtil.addCookie(response, CookieUtil.KEY_ACCESS_TOKEN,
 				accessToken, appProperty.cookieAccessTokenHourAge * CookieUtil.ONE_HOUR);
