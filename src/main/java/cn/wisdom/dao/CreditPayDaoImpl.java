@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import cn.wisdom.dao.constant.ApplyState;
 import cn.wisdom.dao.mapper.DaoRowMapper;
+import cn.wisdom.dao.vo.CreditApply;
 import cn.wisdom.dao.vo.CreditPayRecord;
 
 @Repository
@@ -34,9 +35,15 @@ public class CreditPayDaoImpl implements CreditPayDao {
 	
 	private static final String SQL_GET_BY_STATE = SQL_GET_CREDIT_PAY_PREFIX
 			+ "where return_state = ?";
+	
+	private static final String SQL_GET_APPLY_BY_PAY = "select a.* from credit_pay_record b "
+			+ "inner join credit_apply a on b.apply_id = a.id where b.id = ?";
 
 	private static final DaoRowMapper<CreditPayRecord> creditPayMapper = new DaoRowMapper<CreditPayRecord>(
 			CreditPayRecord.class);
+	
+	private static final DaoRowMapper<CreditApply> creditApplyMapper = new DaoRowMapper<CreditApply>(
+			CreditApply.class);
 
 	@Override
 	public CreditPayRecord getLastPayRecord(long applyId) {
@@ -104,5 +111,14 @@ public class CreditPayDaoImpl implements CreditPayDao {
 				SQL_GET_BY_STATE, creditPayMapper, errMsg, applyState.toString());
 		
 		return creditPayRecords;
+	}
+	
+	@Override
+	public CreditApply getPayRecordApply(long payRecordId) {
+		String errMsg = "Failed to get credit apply of pay record by state: " + payRecordId;
+		CreditApply creditApply = daoHelper.queryForObject(
+				SQL_GET_APPLY_BY_PAY, creditApplyMapper, errMsg, payRecordId);
+		
+		return creditApply;
 	}
 }

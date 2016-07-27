@@ -34,6 +34,7 @@
 		</mvc:interceptor>
 		<mvc:interceptor>
 			<mvc:mapping path="/admin/**" />
+			<mvc:exclude-mapping path="/admin/users/login" />
 			<bean class="cn.wisdom.api.interceptor.AdminAccessInterceptor" />
 		</mvc:interceptor>
 	</mvc:interceptors>

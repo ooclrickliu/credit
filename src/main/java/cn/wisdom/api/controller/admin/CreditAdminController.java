@@ -22,6 +22,7 @@ import cn.wisdom.api.response.CreditAPIResult;
 import cn.wisdom.common.model.JsonDocument;
 import cn.wisdom.dao.constant.ApplyState;
 import cn.wisdom.dao.vo.CreditApply;
+import cn.wisdom.dao.vo.CreditPayRecord;
 import cn.wisdom.service.CreditService;
 import cn.wisdom.service.exception.ServiceException;
 
@@ -43,7 +44,7 @@ public class CreditAdminController {
 	private static final JsonDocument SUCCESS = CreditAPIResult.SUCCESS;
 
 	/**
-	 * 审批通过
+	 * 借款申请列表
 	 * 
 	 * @return
 	 * @throws ServiceException
@@ -60,7 +61,23 @@ public class CreditAdminController {
 	}
 	
 	/**
-	 * 审批通过
+	 * 借款单对应的还款记录列表：Approved, Overdue
+	 * 
+	 * @return
+	 * @throws ServiceException
+	 */
+	@RequestMapping(method = RequestMethod.GET, value = "/apply/pay/list")
+	@ResponseBody
+	public JsonDocument listApplyPayRecord(@RequestParam String applyId)
+			throws ServiceException {
+		
+		List<CreditPayRecord> applyList =  creditService.getApplyPayRecords(applyId);
+		
+		return new CreditAPIResult(applyList);
+	}
+	
+	/**
+	 * 借款审批通过
 	 * 
 	 * @return
 	 * @throws ServiceException
@@ -89,19 +106,35 @@ public class CreditAdminController {
 	}
 
 	/**
-	 * 确认还款
+	 * 还款申请列表
 	 * 
 	 * @return
 	 * @throws ServiceException
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/return/list")
 	@ResponseBody
-	public JsonDocument confirmReturn(@RequestParam String state)
+	public JsonDocument getReturnList(@RequestParam String state)
 			throws ServiceException {
 
 		creditService.getApplyPayRecords(ApplyState.valueOf(state));
 		
 		return SUCCESS;
+	}
+	
+	/**
+	 * 还款申请列表
+	 * 
+	 * @return
+	 * @throws ServiceException
+	 */
+	@RequestMapping(method = RequestMethod.GET, value = "/return/apply")
+	@ResponseBody
+	public JsonDocument getApplyOfReturn(@RequestParam long payRecordId)
+			throws ServiceException {
+		
+		CreditApply creditApply = creditService.getPayRecordApply(payRecordId);
+		
+		return new CreditAPIResult(creditApply);
 	}
 
 	/**

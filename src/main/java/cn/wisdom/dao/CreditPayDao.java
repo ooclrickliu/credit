@@ -3,6 +3,7 @@ package cn.wisdom.dao;
 import java.util.List;
 
 import cn.wisdom.dao.constant.ApplyState;
+import cn.wisdom.dao.vo.CreditApply;
 import cn.wisdom.dao.vo.CreditPayRecord;
 
 public interface CreditPayDao {
@@ -27,4 +28,6 @@ public interface CreditPayDao {
 	List<CreditPayRecord> getApplyPayRecords(String applyId);
 
 	List<CreditPayRecord> getApplyPayRecords(ApplyState applyState);
+
+	CreditApply getPayRecordApply(long payRecordId);
 }

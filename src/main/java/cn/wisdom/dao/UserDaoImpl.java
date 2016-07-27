@@ -62,9 +62,8 @@ public class UserDaoImpl implements UserDao {
 
 		String errMsg = "Failed to update user wx info, openid: "
 				+ user.getOpenid();
-		daoHelper.update(SQL_UPDATE_USER_APPROVE_INFO, errMsg, user.getLevel(),
-				user.getUserState().toString(), user.getCreditLine(),
-				user.getApproveNote(), user.getOpenid());
+		daoHelper.update(SQL_UPDATE_USER_WX_INFO, errMsg, /* user.getNickName(), */
+				user.getHeadImgUrl(), user.getOpenid());
 	}
 
 	@Override
@@ -72,8 +71,9 @@ public class UserDaoImpl implements UserDao {
 
 		String errMsg = "Failed to update user approve info, openid: "
 				+ user.getOpenid();
-		daoHelper.update(SQL_UPDATE_USER_WX_INFO, errMsg, /* user.getNickName(), */
-				user.getHeadImgUrl(), user.getOpenid());
+		daoHelper.update(SQL_UPDATE_USER_APPROVE_INFO, errMsg, user.getLevel(),
+				user.getUserState().toString(), user.getCreditLine(),
+				user.getApproveNote(), user.getOpenid());
 	}
 
 	@Override

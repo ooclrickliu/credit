@@ -33,15 +33,15 @@ public class AccessTokenDaoImpl implements AccessTokenDao
             "SELECT user_id FROM access_token WHERE access_token = ? and is_delete = 0 LIMIT 1";
 
     private static final String SQL_INSERT_TOKEN =
-            "INSERT IGNORE INTO access_token(u_id, uat_token, "
-                    + "uat_client_type, uat_expire_time, update_time) "
+            "INSERT IGNORE INTO access_token(user_id, access_token, "
+                    + "client_type, expire_time, update_time) "
                     + "VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)";
 
     private static final String SQL_DELETE_TOKEN =
-            "delete from access_token WHERE uat_token = ?";
+            "delete from access_token WHERE access_token = ?";
 
     private static final String SQL_DELETE_TOKEN_BY_USER =
-            "delete from access_token WHERE u_id = ?";
+            "delete from access_token WHERE user_id = ?";
 
     /*
      * (non-Javadoc)

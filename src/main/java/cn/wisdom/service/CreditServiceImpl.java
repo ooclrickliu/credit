@@ -359,4 +359,9 @@ public class CreditServiceImpl implements CreditService {
 	public List<CreditPayRecord> getApplyPayRecords(ApplyState applyState) {
 		return creditPayDao.getApplyPayRecords(applyState);
 	}
+	
+	@Override
+	public CreditApply getPayRecordApply(long payRecordId) {
+		return creditPayDao.getPayRecordApply(payRecordId);
+	}
 }

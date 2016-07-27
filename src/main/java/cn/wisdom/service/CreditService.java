@@ -44,4 +44,6 @@ public interface CreditService {
 
 	List<CreditPayRecord> getApplyPayRecords(ApplyState applyState);
 
+	CreditApply getPayRecordApply(long payRecordId);
+
 }
