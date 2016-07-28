@@ -148,7 +148,7 @@ public class CreditApplyDaoImpl implements CreditApplyDao {
 	@Override
 	public void deleteApply(long applyId) {
 		String errMsg = "Failed to update credit apply to overdue.";
-		daoHelper.update(SQL_DELETE_APPLY, errMsg);
+		daoHelper.update(SQL_DELETE_APPLY, errMsg, applyId);
 	}
 
 }

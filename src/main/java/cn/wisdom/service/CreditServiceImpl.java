@@ -104,7 +104,7 @@ public class CreditServiceImpl implements CreditService {
 		try {
 			File commissionImg = wxService.getWxMpService().mediaDownload(
 					commissionImgUrl);
-			creditApply.setCommissionImgUrl(commissionImg.getAbsolutePath());
+			creditApply.setCommissionImgUrl(commissionImg.getName());
 
 			if (isCreditApplyReady(creditApply)) {
 				creditApply.setApplyState(ApplyState.Approving);
@@ -171,7 +171,7 @@ public class CreditServiceImpl implements CreditService {
 				newPayRecord.setRemainBase(creditApply.getAmount());
 				newPayRecord.setReturnState(ApplyState.Approving);
 				newPayRecord.setReturnTime(DateTimeUtils.getCurrentTimestamp());
-				newPayRecord.setPayImgUrl(returnCreditImg.getAbsolutePath());
+				newPayRecord.setPayImgUrl(returnCreditImg.getName());
 
 				float interest = creditCalculator.calculateInterest(
 						creditApply.getAmount(),
@@ -184,7 +184,7 @@ public class CreditServiceImpl implements CreditService {
 				newPayRecord.setRemainBase(lastPayRecord.getRemainBase());
 				newPayRecord.setReturnState(ApplyState.Approving);
 				newPayRecord.setReturnTime(DateTimeUtils.getCurrentTimestamp());
-				newPayRecord.setPayImgUrl(returnCreditImg.getAbsolutePath());
+				newPayRecord.setPayImgUrl(returnCreditImg.getName());
 
 				float interest = creditCalculator.calculateInterest(
 						lastPayRecord.getRemainBase(),

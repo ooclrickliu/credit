@@ -1,10 +1,12 @@
 package cn.wisdom.dao;
 
+import java.text.MessageFormat;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import cn.wisdom.common.utils.StringUtils;
 import cn.wisdom.dao.constant.UserState;
 import cn.wisdom.dao.mapper.DaoRowMapper;
 import cn.wisdom.dao.vo.User;
@@ -44,6 +46,9 @@ public class UserDaoImpl implements UserDao {
 
 	private static final String SQL_GET_USER_BY_STATE = SQL_GET_USER_PREFIX
 			+ "where user_state = ?";
+	
+	private static final String SQL_GET_USER_BY_IDS = SQL_GET_USER_PREFIX
+			+ "where id in ({0})";
 
 	private static final DaoRowMapper<User> userMapper = new DaoRowMapper<User>(
 			User.class);
@@ -165,6 +170,15 @@ public class UserDaoImpl implements UserDao {
 				+ userId;
 		daoHelper.update(SQL_UPDATE_USER_PASSWORD, errMsg,
 				newPassword, userId);
+	}
+	
+	@Override
+	public List<User> getUserList(List<Long> userIdList) {
+
+		String sql = MessageFormat.format(SQL_GET_USER_BY_IDS, StringUtils.getCSV(userIdList));
+		
+		String errMsg = "Failed to query user by id list: " + userIdList;
+		return daoHelper.queryForList(sql, userMapper, errMsg);
 	}
 
 }

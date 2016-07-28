@@ -97,5 +97,7 @@ public interface UserService
     void logout(String accessToken) throws ServiceException;
 
 	String changePassword(String oldPassword, String newPassword) throws ServiceException;
+
+	List<User> getUserList(List<Long> userIdList);
     
 }

@@ -7,6 +7,8 @@
  */
 package cn.wisdom.test;
 
+import java.io.File;
+import java.io.IOException;
 import java.text.NumberFormat;
 import java.util.Locale;
 
@@ -193,8 +195,20 @@ public class TestMain
 //			e.printStackTrace();
 //		}
     	
-    	String password = "88888888";
-    	System.out.println(EncryptionUtils.encrypt(password));
+//    	String password = "88888888";
+//    	System.out.println(EncryptionUtils.encrypt(password));
+    	
+    	File file = new File("D:\\OVT_Projects\\Share\\ActiveMq.doc");
+    	if (file.exists()) {
+			System.out.println(file.getAbsolutePath());
+			try {
+				System.out.println(file.getCanonicalPath());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			System.out.println(file.getName());
+		}
+    	
     }
     
     public static String formatNumber(double num,int maxFractionDigits) {

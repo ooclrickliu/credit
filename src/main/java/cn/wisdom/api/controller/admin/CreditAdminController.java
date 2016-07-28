@@ -19,11 +19,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import cn.wisdom.api.response.CreditAPIResult;
+import cn.wisdom.api.response.CreditApplyResponse;
+import cn.wisdom.api.response.ResponseBuilder;
 import cn.wisdom.common.model.JsonDocument;
 import cn.wisdom.dao.constant.ApplyState;
 import cn.wisdom.dao.vo.CreditApply;
 import cn.wisdom.dao.vo.CreditPayRecord;
+import cn.wisdom.dao.vo.User;
 import cn.wisdom.service.CreditService;
+import cn.wisdom.service.UserService;
 import cn.wisdom.service.exception.ServiceException;
 
 /**
@@ -38,8 +42,12 @@ import cn.wisdom.service.exception.ServiceException;
 @Controller
 @RequestMapping("/admin/credit")
 public class CreditAdminController {
+	
 	@Autowired
 	private CreditService creditService;
+	
+	@Autowired
+	private UserService userService;
 
 	private static final JsonDocument SUCCESS = CreditAPIResult.SUCCESS;
 
@@ -56,8 +64,16 @@ public class CreditAdminController {
 		List<ApplyState> states = new ArrayList<ApplyState>();
 		states.add(ApplyState.valueOf(state));
 		List<CreditApply> applyList = creditService.getApplyList(-1, states, null, true);
+		
+		List<Long> userIdList = new ArrayList<Long>();
+		for (CreditApply creditApply : applyList) {
+			userIdList.add(creditApply.getUserId());
+		}
+		List<User> userList = userService.getUserList(userIdList);
+		
+		List<CreditApplyResponse> response = ResponseBuilder.buildCreditApplyResposne(applyList, userList);
 
-		return new CreditAPIResult(applyList);
+		return new CreditAPIResult(response);
 	}
 	
 	/**
@@ -116,9 +132,9 @@ public class CreditAdminController {
 	public JsonDocument getReturnList(@RequestParam String state)
 			throws ServiceException {
 
-		creditService.getApplyPayRecords(ApplyState.valueOf(state));
+		List<CreditPayRecord> applyPayRecords = creditService.getApplyPayRecords(ApplyState.valueOf(state));
 		
-		return SUCCESS;
+		return new CreditAPIResult(applyPayRecords);
 	}
 	
 	/**
@@ -134,7 +150,11 @@ public class CreditAdminController {
 		
 		CreditApply creditApply = creditService.getPayRecordApply(payRecordId);
 		
-		return new CreditAPIResult(creditApply);
+		CreditApplyResponse creditApplyResponse = new CreditApplyResponse();
+		creditApplyResponse.setCreditApply(creditApply);
+		creditApplyResponse.setUser(userService.getUserById(creditApply.getUserId()));
+		
+		return new CreditAPIResult(creditApplyResponse);
 	}
 
 	/**

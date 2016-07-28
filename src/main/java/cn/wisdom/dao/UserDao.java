@@ -31,4 +31,6 @@ public interface UserDao {
 
 	void updatePassword(long userId, String encrypt);
 
+	List<User> getUserList(List<Long> userIdList);
+
 }

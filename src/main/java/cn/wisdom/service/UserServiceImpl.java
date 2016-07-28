@@ -138,16 +138,13 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void submitStuffStep1(User user) {
 
-//		if (!user.isStep1Done()) {
-//			
-//		}
 		setUserCreditLine(user);
 
 		// save upload file
 		try {
 			File idFaceImg = wxService.getWxMpService().mediaDownload(
 					user.getIdFaceImgUrl());
-			user.setIdFaceImgUrl(idFaceImg.getAbsolutePath());
+			user.setIdFaceImgUrl(idFaceImg.getName());
 		} catch (WxErrorException e) {
 			logger.error("failed to upload idFaceImg", e);
 		}
@@ -155,7 +152,7 @@ public class UserServiceImpl implements UserService {
 		try {
 			File idBackImg = wxService.getWxMpService().mediaDownload(
 					user.getIdBackImgUrl());
-			user.setIdBackImgUrl(idBackImg.getAbsolutePath());
+			user.setIdBackImgUrl(idBackImg.getName());
 		} catch (WxErrorException e) {
 			logger.error("failed to upload idBackImg", e);
 		}
@@ -163,7 +160,7 @@ public class UserServiceImpl implements UserService {
 		try {
 			File personIdImg = wxService.getWxMpService().mediaDownload(
 					user.getPersonIdImgUrl());
-			user.setPersonIdImgUrl(personIdImg.getAbsolutePath());
+			user.setPersonIdImgUrl(personIdImg.getName());
 		} catch (WxErrorException e) {
 			logger.error("failed to upload personIdImg", e);
 		}
@@ -205,7 +202,7 @@ public class UserServiceImpl implements UserService {
 		try {
 			File wxPayImg = wxService.getWxMpService().mediaDownload(
 					user.getWxPayImgUrl());
-			user.setWxPayImgUrl(wxPayImg.getAbsolutePath());
+			user.setWxPayImgUrl(wxPayImg.getName());
 
 			userDao.updateUserStuffInfo4(user);
 		} catch (WxErrorException e) {
@@ -340,5 +337,11 @@ public class UserServiceImpl implements UserService {
         String accessToken =
                 accessTokenService.generateAccessToken(userId);
         return accessToken;
+    }
+    
+    @Override
+    public List<User> getUserList(List<Long> userIdList) {
+    	
+    	return userDao.getUserList(userIdList);
     }
 }
