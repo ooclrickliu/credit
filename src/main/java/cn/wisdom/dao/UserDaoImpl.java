@@ -1,11 +1,13 @@
 package cn.wisdom.dao;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import cn.wisdom.common.utils.CollectionUtils;
 import cn.wisdom.common.utils.StringUtils;
 import cn.wisdom.dao.constant.UserState;
 import cn.wisdom.dao.mapper.DaoRowMapper;
@@ -174,7 +176,12 @@ public class UserDaoImpl implements UserDao {
 	
 	@Override
 	public List<User> getUserList(List<Long> userIdList) {
-
+		List<User> userList = null;
+		if (CollectionUtils.isEmpty(userIdList)) {
+			userList = new ArrayList<User>();
+			return userList;
+		}
+		
 		String sql = MessageFormat.format(SQL_GET_USER_BY_IDS, StringUtils.getCSV(userIdList));
 		
 		String errMsg = "Failed to query user by id list: " + userIdList;
