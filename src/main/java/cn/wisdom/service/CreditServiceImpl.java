@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import cn.wisdom.api.response.AccountProfile;
 import cn.wisdom.common.log.Logger;
 import cn.wisdom.common.log.LoggerFactory;
+import cn.wisdom.common.utils.DataConvertUtils;
 import cn.wisdom.common.utils.DateTimeUtils;
 import cn.wisdom.common.utils.StringUtils;
 import cn.wisdom.dao.CreditApplyDao;
@@ -363,5 +364,11 @@ public class CreditServiceImpl implements CreditService {
 	@Override
 	public CreditApply getPayRecordApply(long payRecordId) {
 		return creditPayDao.getPayRecordApply(payRecordId);
+	}
+	
+	@Override
+	public CreditApply getCreditApply(String applyId) {
+		
+		return creditApplyDao.getApply(DataConvertUtils.toLong(applyId));
 	}
 }

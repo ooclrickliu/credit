@@ -46,4 +46,6 @@ public interface CreditService {
 
 	CreditApply getPayRecordApply(long payRecordId);
 
+	CreditApply getCreditApply(String applyId);
+
 }

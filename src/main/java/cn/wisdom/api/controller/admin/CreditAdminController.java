@@ -82,14 +82,19 @@ public class CreditAdminController {
 	 * @return
 	 * @throws ServiceException
 	 */
-	@RequestMapping(method = RequestMethod.GET, value = "/apply/pay/list")
+	@RequestMapping(method = RequestMethod.GET, value = "/apply/detail")
 	@ResponseBody
 	public JsonDocument listApplyPayRecord(@RequestParam String applyId)
 			throws ServiceException {
 		
-		List<CreditPayRecord> applyList =  creditService.getApplyPayRecords(applyId);
+		CreditApplyResponse response = new CreditApplyResponse();
 		
-		return new CreditAPIResult(applyList);
+		response.setCreditApply(creditService.getCreditApply(applyId));
+		
+		List<CreditPayRecord> applyList =  creditService.getApplyPayRecords(applyId);
+		response.setPayRecords(applyList);
+		
+		return new CreditAPIResult(response);
 	}
 	
 	/**
