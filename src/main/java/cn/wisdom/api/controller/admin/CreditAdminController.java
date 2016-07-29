@@ -84,7 +84,7 @@ public class CreditAdminController {
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/apply/detail")
 	@ResponseBody
-	public JsonDocument listApplyPayRecord(@RequestParam String applyId)
+	public JsonDocument getApplyPayRecordDetail(@RequestParam String applyId)
 			throws ServiceException {
 		
 		CreditApplyResponse response = new CreditApplyResponse();
@@ -95,6 +95,26 @@ public class CreditAdminController {
 		response.setPayRecords(applyList);
 		
 		return new CreditAPIResult(response);
+	}
+	
+	/**
+	 * 还款申请以及用户信息
+	 * 
+	 * @return
+	 * @throws ServiceException
+	 */
+	@RequestMapping(method = RequestMethod.GET, value = "/apply/detail2")
+	@ResponseBody
+	public JsonDocument getApplyOfReturn(@RequestParam String applyId)
+			throws ServiceException {
+		
+		CreditApply creditApply = creditService.getCreditApply(applyId);
+		
+		CreditApplyResponse creditApplyResponse = new CreditApplyResponse();
+		creditApplyResponse.setCreditApply(creditApply);
+		creditApplyResponse.setUser(userService.getUserById(creditApply.getUserId()));
+		
+		return new CreditAPIResult(creditApplyResponse);
 	}
 	
 	/**
@@ -140,26 +160,6 @@ public class CreditAdminController {
 		List<CreditPayRecord> applyPayRecords = creditService.getApplyPayRecords(ApplyState.valueOf(state));
 		
 		return new CreditAPIResult(applyPayRecords);
-	}
-	
-	/**
-	 * 还款申请列表
-	 * 
-	 * @return
-	 * @throws ServiceException
-	 */
-	@RequestMapping(method = RequestMethod.GET, value = "/return/apply")
-	@ResponseBody
-	public JsonDocument getApplyOfReturn(@RequestParam long payRecordId)
-			throws ServiceException {
-		
-		CreditApply creditApply = creditService.getPayRecordApply(payRecordId);
-		
-		CreditApplyResponse creditApplyResponse = new CreditApplyResponse();
-		creditApplyResponse.setCreditApply(creditApply);
-		creditApplyResponse.setUser(userService.getUserById(creditApply.getUserId()));
-		
-		return new CreditAPIResult(creditApplyResponse);
 	}
 
 	/**
