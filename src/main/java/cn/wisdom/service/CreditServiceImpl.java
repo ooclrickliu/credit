@@ -278,6 +278,17 @@ public class CreditServiceImpl implements CreditService {
 								appProperty.creditRatePerDay);
 				creditApply.setInterest(interest);
 			}
+			else if (creditApply.getApplyState() == ApplyState.ReturnDone) {
+				// sum interest of all pay record
+				List<CreditPayRecord> payRecords = this.getApplyPayRecords(DataConvertUtils.toString(creditApply.getId()));
+				float interests = 0;
+				for (CreditPayRecord creditPayRecord : payRecords) {
+					if (creditPayRecord.getReturnState() == ApplyState.Approved) {
+						interests += creditPayRecord.getInterest();
+					}
+				}
+				creditApply.setInterest(interests);
+			}
 		}
 
 		return applyList;
