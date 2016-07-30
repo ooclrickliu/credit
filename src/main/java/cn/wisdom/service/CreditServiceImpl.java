@@ -233,7 +233,7 @@ public class CreditServiceImpl implements CreditService {
 		creditApplyDao.updateReturnInfo(apply);
 		
 		try {
-			messageNotifier.notifyReturnSuccess(apply, payRecord);
+			messageNotifier.notifyUserReturnSuccess(apply, payRecord);
 		} catch (WxErrorException e) {
 			logger.error("failed to notify user return success!", e);
 		}
@@ -249,7 +249,7 @@ public class CreditServiceImpl implements CreditService {
 		CreditApply apply = creditApplyDao.getApply(payRecord.getApplyId());
 		
 		try {
-			messageNotifier.notifyReturnFailed(apply, payRecord);
+			messageNotifier.notifyUserReturnFailed(apply, payRecord);
 		} catch (WxErrorException e) {
 			logger.error("failed to notify user return fail!", e);
 		}

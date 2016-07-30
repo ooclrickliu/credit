@@ -68,7 +68,7 @@ public class MessageNotifierImpl implements MessageNotifier {
 	}
 
 	@Override
-	public void notifyReturnSuccess(CreditApply apply, CreditPayRecord payRecord) throws WxErrorException {
+	public void notifyUserReturnSuccess(CreditApply apply, CreditPayRecord payRecord) throws WxErrorException {
 		
 		String content = "";
 		
@@ -90,7 +90,7 @@ public class MessageNotifierImpl implements MessageNotifier {
 	}
 
 	@Override
-	public void notifyReturnFailed(CreditApply apply, CreditPayRecord payRecord)
+	public void notifyUserReturnFailed(CreditApply apply, CreditPayRecord payRecord)
 			throws WxErrorException {
 		String content = MessageFormat.format("还款失败! \n您于{0} 还款{1}元未成功。",
 				DateTimeUtils.formatSqlDateTime(payRecord.getReturnTime()), payRecord.getReturnedAmount());

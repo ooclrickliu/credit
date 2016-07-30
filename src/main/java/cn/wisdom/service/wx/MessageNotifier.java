@@ -10,7 +10,7 @@ public interface MessageNotifier {
 
 	void notifyUserApplyApproved(CreditApply apply) throws WxErrorException;
 
-	void notifyReturnSuccess(CreditApply apply, CreditPayRecord payRecord) throws WxErrorException;
+	void notifyUserReturnSuccess(CreditApply apply, CreditPayRecord payRecord) throws WxErrorException;
 
-	void notifyReturnFailed(CreditApply apply, CreditPayRecord payRecord) throws WxErrorException;
+	void notifyUserReturnFailed(CreditApply apply, CreditPayRecord payRecord) throws WxErrorException;
 }
