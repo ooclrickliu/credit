@@ -206,6 +206,11 @@ public class CreditServiceImpl implements CreditService {
 
 		// update credit pay record
 		CreditPayRecord payRecord = creditPayDao.getPayRecord(payRecordId);
+		
+		if (payRecord.getReturnState() != ApplyState.Applying) {
+			return;
+		}
+		
 		payRecord.setReturnedAmount(returnAmount);
 
 		float remainBase = payRecord.getRemainBase()
