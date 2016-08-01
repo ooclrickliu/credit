@@ -223,7 +223,7 @@ public class UserServiceImpl implements UserService {
 	private boolean isStuffComplete(User user) {
 
 		return user.isStep1Done() && user.isStep2Done()
-				&& user.isStep3Done() && user.isStep4Done();
+				&& user.isStep3Done()/* && user.isStep4Done()*/;
 	}
 
 	private float generateCreditLine() {
