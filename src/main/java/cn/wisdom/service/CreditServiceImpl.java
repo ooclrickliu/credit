@@ -206,6 +206,11 @@ public class CreditServiceImpl implements CreditService {
 
 		// update credit pay record
 		CreditPayRecord payRecord = creditPayDao.getPayRecord(payRecordId);
+		
+		if (payRecord.getReturnState() != ApplyState.Applying) {
+			return;
+		}
+		
 		payRecord.setReturnedAmount(returnAmount);
 
 		float remainBase = payRecord.getRemainBase()
@@ -228,7 +233,7 @@ public class CreditServiceImpl implements CreditService {
 		creditApplyDao.updateReturnInfo(apply);
 		
 		try {
-			messageNotifier.notifyReturnSuccess(apply, payRecord);
+			messageNotifier.notifyUserReturnSuccess(apply, payRecord);
 		} catch (WxErrorException e) {
 			logger.error("failed to notify user return success!", e);
 		}
@@ -244,7 +249,7 @@ public class CreditServiceImpl implements CreditService {
 		CreditApply apply = creditApplyDao.getApply(payRecord.getApplyId());
 		
 		try {
-			messageNotifier.notifyReturnFailed(apply, payRecord);
+			messageNotifier.notifyUserReturnFailed(apply, payRecord);
 		} catch (WxErrorException e) {
 			logger.error("failed to notify user return fail!", e);
 		}
@@ -272,6 +277,17 @@ public class CreditServiceImpl implements CreditService {
 								creditApply.getEffectiveTime(),
 								appProperty.creditRatePerDay);
 				creditApply.setInterest(interest);
+			}
+			else if (creditApply.getApplyState() == ApplyState.ReturnDone) {
+				// sum interest of all pay record
+				List<CreditPayRecord> payRecords = this.getApplyPayRecords(DataConvertUtils.toString(creditApply.getId()));
+				float interests = 0;
+				for (CreditPayRecord creditPayRecord : payRecords) {
+					if (creditPayRecord.getReturnState() == ApplyState.Approved) {
+						interests += creditPayRecord.getInterest();
+					}
+				}
+				creditApply.setInterest(interests);
 			}
 		}
 

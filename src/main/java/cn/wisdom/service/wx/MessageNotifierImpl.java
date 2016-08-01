@@ -9,6 +9,8 @@ import me.chanjar.weixin.mp.bean.WxMpCustomMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import cn.wisdom.common.log.Logger;
+import cn.wisdom.common.log.LoggerFactory;
 import cn.wisdom.common.utils.DateTimeUtils;
 import cn.wisdom.dao.vo.AppProperty;
 import cn.wisdom.dao.vo.CreditApply;
@@ -27,6 +29,8 @@ public class MessageNotifierImpl implements MessageNotifier {
 
 	@Autowired
 	private AppProperty appProperty;
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(MessageNotifierImpl.class.getName());
 
 	private void sendTextMessage(String content, String openid)
 			throws WxErrorException {
@@ -37,14 +41,19 @@ public class MessageNotifierImpl implements MessageNotifier {
 
 	@Override
 	public void notifyBossNewApply(CreditApply creditApply)
-			throws WxErrorException {
+	{
 
 		String content = MessageFormat.format("Boss, 有新借款申请(金额：{0})，请尽快审批!",
 				creditApply.getAmount());
 
 		List<String> bossOpenidList = appProperty.getBossOpenidList();
 		for (String bossOpenid : bossOpenidList) {
-			sendTextMessage(content, bossOpenid);
+			try {
+				sendTextMessage(content, bossOpenid);
+			} catch (WxErrorException e) {
+				String errMsg = MessageFormat.format("Failed to notify boss [{0}]", bossOpenid);
+				LOGGER.error(errMsg, e);
+			}
 		}
 	}
 
@@ -59,7 +68,7 @@ public class MessageNotifierImpl implements MessageNotifier {
 	}
 
 	@Override
-	public void notifyReturnSuccess(CreditApply apply, CreditPayRecord payRecord) throws WxErrorException {
+	public void notifyUserReturnSuccess(CreditApply apply, CreditPayRecord payRecord) throws WxErrorException {
 		
 		String content = "";
 		
@@ -81,7 +90,7 @@ public class MessageNotifierImpl implements MessageNotifier {
 	}
 
 	@Override
-	public void notifyReturnFailed(CreditApply apply, CreditPayRecord payRecord)
+	public void notifyUserReturnFailed(CreditApply apply, CreditPayRecord payRecord)
 			throws WxErrorException {
 		String content = MessageFormat.format("还款失败! \n您于{0} 还款{1}元未成功。",
 				DateTimeUtils.formatSqlDateTime(payRecord.getReturnTime()), payRecord.getReturnedAmount());

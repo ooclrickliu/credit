@@ -33,7 +33,7 @@ public class UserDaoImpl implements UserDao {
 
 	private static final String SQL_UPDATE_USER_STUFF_INFO4 = "update user set wx_pay_img_url = ?, credit_line = ?, user_state = ?, update_time = current_timestamp where openid = ?";
 	
-	private static final String SQL_UPDATE_USER_PASSWORD = "update user set password = ?, update_time = current_timestamp where phone = ?";
+	private static final String SQL_UPDATE_USER_PASSWORD = "update user set password = ?, update_time = current_timestamp where id = ?";
 
 	private static final String SQL_GET_USER_PREFIX = "select * from user ";
 
