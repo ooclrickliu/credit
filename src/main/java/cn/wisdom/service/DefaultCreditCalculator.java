@@ -28,11 +28,11 @@ public class DefaultCreditCalculator implements CreditCalculator {
 	@PostConstruct
 	public void init() {
 		userLevelCreditLineMap.put(0, new CreditLineLevel(0, 0));
-		userLevelCreditLineMap.put(1, new CreditLineLevel(3000, 4000));
-		userLevelCreditLineMap.put(2, new CreditLineLevel(4000, 6000));
-		userLevelCreditLineMap.put(3, new CreditLineLevel(6000, 8000));
-		userLevelCreditLineMap.put(4, new CreditLineLevel(8000, 9000));
-		userLevelCreditLineMap.put(5, new CreditLineLevel(9000, 10000));
+		userLevelCreditLineMap.put(1, new CreditLineLevel(1000, 2000));
+		userLevelCreditLineMap.put(2, new CreditLineLevel(2000, 3000));
+		userLevelCreditLineMap.put(3, new CreditLineLevel(3000, 4000));
+		userLevelCreditLineMap.put(4, new CreditLineLevel(4000, 4500));
+		userLevelCreditLineMap.put(5, new CreditLineLevel(4500, 5000));
 	}
 
 	class CreditLineLevel {
